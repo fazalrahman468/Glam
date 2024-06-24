@@ -16,7 +16,7 @@ export default function ShoppingComp({image, title, onPress}) {
       <ImageBackground
         source={require('../assets/images/Rectangle14.png')}
         style={styles.img}>
-        <Image source={image} />
+        <Image source={{uri: image}} style={styles.image} />
       </ImageBackground>
       <Text style={styles.text}>{title}</Text>
     </TouchableOpacity>
@@ -27,8 +27,15 @@ const styles = StyleSheet.create({
   cont: {
     marginTop: 30,
     alignItems: 'center',
+    marginRight: 10,
+    height: 200,
   },
   img: {width: 75, height: 75, alignItems: 'center', justifyContent: 'center'},
+  image: {
+    width: 50,
+    height: 50,
+    resizeMode: 'cover',
+  },
   text: {
     fontFamily: Fonts.bold,
     fontSize: 15,

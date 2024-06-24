@@ -2,28 +2,29 @@ import {View, Text, StyleSheet, Image} from 'react-native';
 import React from 'react';
 import {Colors} from '../assets/colors/Colors';
 import {Fonts} from '../assets/fonts/Fonts';
-import PriceComp from '../components/PriceComp';
 import CartButton from '../components/CartButton';
-import {useNavigation} from '@react-navigation/native';
+import {useNavigation, useRoute} from '@react-navigation/native';
 
 export default function Prices() {
   const navigation = useNavigation();
+  const route = useRoute();
+  const {title, image, price, serviceId} = route.params;
 
   return (
     <View style={styles.cont}>
-      <Image source={require('../assets/images/Rectangle13.png')} />
+      <Image source={{uri: image}} style={styles.image} />
       <View style={styles.cont1}>
-        <Text style={styles.text}>Makeup</Text>
-        <View style={{justifyContent: 'space-between', height: '40%'}}>
-          <PriceComp title="Party makeover" subTitle="$ 150" />
-          <PriceComp title="Bride makeover" subTitle="$ 500" />
-          <PriceComp title="Normal makeover" subTitle="$ 100" />
-        </View>
+        <Text style={styles.text}>{title}</Text>
+        <Text style={styles.price}>Price: ${price}</Text>
       </View>
       <View style={styles.btnView}>
         <CartButton
           title="Continue"
-          onPress={() => navigation.navigate('BookingCheckOut')}
+          onPress={() =>
+            navigation.navigate('Appointments', {
+              selectedService: {title, price, serviceId},
+            })
+          }
         />
       </View>
     </View>
@@ -38,14 +39,24 @@ const styles = StyleSheet.create({
   cont1: {
     padding: 20,
     flex: 1,
-    justifyContent: 'space-around',
   },
   text: {
     fontFamily: Fonts.bold,
     fontSize: 32,
     color: Colors.blackDark,
   },
+  price: {
+    fontFamily: Fonts.bold,
+    fontSize: 24,
+    color: Colors.blackDark,
+    marginTop: 10,
+  },
   btnView: {
     padding: 20,
+  },
+  image: {
+    width: '100%',
+    height: 200,
+    resizeMode: 'cover',
   },
 });

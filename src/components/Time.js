@@ -3,10 +3,16 @@ import React from 'react';
 import {Colors} from '../assets/colors/Colors';
 import {Fonts} from '../assets/fonts/Fonts';
 
-export default function Time({title}) {
+export default function Time({title, isSelected}) {
   return (
-    <View style={styles.subTextView}>
-      <Text style={styles.subText}>{title}</Text>
+    <View
+      style={[
+        styles.subTextView,
+        isSelected && {backgroundColor: Colors.black},
+      ]}>
+      <Text style={[styles.subText, isSelected && {color: Colors.white}]}>
+        {title}
+      </Text>
     </View>
   );
 }
@@ -20,6 +26,8 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.white,
     borderRadius: 10,
     alignItems: 'center',
+    justifyContent: 'center',
+    padding: 5,
   },
   subText: {
     fontFamily: Fonts.semiBold,

@@ -1,4 +1,4 @@
-import {View, Text, StyleSheet, Image} from 'react-native';
+import {View, Text, StyleSheet} from 'react-native';
 import React from 'react';
 import {Colors} from '../assets/colors/Colors';
 import {Fonts} from '../assets/fonts/Fonts';
@@ -6,49 +6,48 @@ import {Fonts} from '../assets/fonts/Fonts';
 export default function TotalComp({
   title,
   value,
-  subTitle,
-  subValue,
   taxTitle,
   tax,
+  subTitle,
+  subValue,
 }) {
   return (
-    <View style={styles.cont}>
-      <View style={styles.titleView}>
-        <Text style={styles.subTitle}>{title}</Text>
-        <Text style={styles.subTitle}>{value}</Text>
+    <View style={styles.container}>
+      <View style={styles.row}>
+        <Text style={styles.text}>{title}</Text>
+        <Text style={styles.text}>{value}</Text>
       </View>
-      <View style={styles.titleView}>
-        <Text style={styles.subTitle}>{taxTitle}</Text>
-        <Text style={styles.subTitle}>{tax}</Text>
+      <View style={styles.row}>
+        <Text style={styles.text}>{taxTitle}</Text>
+        <Text style={styles.text}>{tax}</Text>
       </View>
-      <View style={styles.titleView}>
-        <Text style={styles.title}>{subTitle}</Text>
-        <Text style={styles.title}>{subValue}</Text>
+      <View style={styles.row}>
+        <Text style={styles.subText}>{subTitle}</Text>
+        <Text style={styles.subText}>{subValue}</Text>
       </View>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  cont: {
-    backgroundColor: Colors.white,
+  container: {
+    padding: 10,
+    backgroundColor: Colors.lightGray,
+    borderRadius: 10,
   },
-  titleView: {
+  row: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    padding: 10,
+    marginVertical: 5,
   },
-  title: {
-    fontFamily: Fonts.semiBold,
-    fontSize: 25,
-    color: Colors.black,
-  },
-  subTitleView: {
-    paddingLeft: 15,
-  },
-  subTitle: {
-    fontFamily: Fonts.semiBold,
-    fontSize: 25,
+  text: {
+    fontFamily: Fonts.bold,
+    fontSize: 18,
     color: Colors.gray2,
+  },
+  subText: {
+    fontFamily: Fonts.bold,
+    fontSize: 18,
+    color: Colors.black,
   },
 });

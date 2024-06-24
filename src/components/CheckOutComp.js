@@ -1,14 +1,14 @@
-import {View, Text, StyleSheet, Image} from 'react-native';
+import {View, Text, StyleSheet, Image, TouchableOpacity} from 'react-native';
 import React from 'react';
 import {Colors} from '../assets/colors/Colors';
 import {Fonts} from '../assets/fonts/Fonts';
 
-export default function CheckOutComp({title, value, subTitle, time}) {
+export default function CheckOutComp({title, value, subTitle, time, onRemove}) {
   return (
     <View style={styles.cont}>
-      <View style={{alignItems: 'flex-end'}}>
+      <TouchableOpacity onPress={onRemove} style={{alignItems: 'flex-end'}}>
         <Image source={require('../assets/images/Cross.png')} />
-      </View>
+      </TouchableOpacity>
       <View style={styles.titleView}>
         <Text style={styles.title}>{title}</Text>
         <Text style={styles.title}>{value}</Text>

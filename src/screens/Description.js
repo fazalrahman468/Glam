@@ -6,9 +6,9 @@ import {
   Image,
   TouchableOpacity,
 } from 'react-native';
-import React from 'react';
+import React, {useState} from 'react';
 import {Colors} from '../assets/colors/Colors';
-import {useNavigation} from '@react-navigation/native';
+import {useNavigation, useRoute} from '@react-navigation/native';
 import {Fonts} from '../assets/fonts/Fonts';
 import Star from '../components/Star';
 import DescButtons from '../components/DescButtons';
@@ -16,12 +16,24 @@ import CartButton from '../components/CartButton';
 
 export default function Description() {
   const navigation = useNavigation();
+  const route = useRoute();
+  const {item} = route.params;
+
+  const [quantity, setQuantity] = useState(1);
+
+  const increaseQuantity = () => {
+    setQuantity(prevQuantity => prevQuantity + 1);
+  };
+
+  const decreaseQuantity = () => {
+    setQuantity(prevQuantity => (prevQuantity > 1 ? prevQuantity - 1 : 1));
+  };
+
+  const totalPrice = item.price * quantity;
 
   return (
     <View style={styles.cont}>
-      <ImageBackground
-        source={require('../assets/images/Nails.png')}
-        style={styles.img}>
+      <ImageBackground source={{uri: item.image}} style={styles.img}>
         <TouchableOpacity
           style={styles.arrowView}
           onPress={() => navigation.goBack()}>
@@ -33,17 +45,24 @@ export default function Description() {
       </View>
       <View style={styles.cont1}>
         <Text style={styles.qtyText}>Quantity</Text>
-        <DescButtons />
+        <View style={styles.descButtons}>
+          <TouchableOpacity onPress={decreaseQuantity}>
+            <Text style={styles.buttonText}>-</Text>
+          </TouchableOpacity>
+          <Text style={styles.quantityText}>{quantity}</Text>
+          <TouchableOpacity onPress={increaseQuantity}>
+            <Text style={styles.buttonText}>+</Text>
+          </TouchableOpacity>
+        </View>
         <Text style={styles.about}>About</Text>
-        <Text style={styles.det}>
-          nail polish is a lacquer that can be applied to the human fingernail
-          or toenails to decorate and protect the nail plates.
-        </Text>
+        <Text style={styles.det}>{item.description}</Text>
       </View>
       <View style={styles.btnView}>
         <CartButton
-          title="Add to cart"
-          onPress={() => navigation.navigate('Cart')}
+          title={`Add to cart | $${totalPrice.toFixed(2)}`}
+          onPress={() =>
+            navigation.navigate('Cart', {item, quantity, productId: item._id})
+          }
         />
       </View>
     </View>
@@ -75,6 +94,20 @@ const styles = StyleSheet.create({
   },
   cont1: {
     marginLeft: 20,
+  },
+  descButtons: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginVertical: 10,
+  },
+  buttonText: {
+    fontSize: 30,
+    color: Colors.blackDark,
+    marginHorizontal: 20,
+  },
+  quantityText: {
+    fontSize: 30,
+    color: Colors.blackDark,
   },
   about: {
     fontFamily: Fonts.semiBold,

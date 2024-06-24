@@ -15,6 +15,8 @@ import LogOut from '../screens/LogOut';
 import {Colors} from '../assets/colors/Colors';
 import {Fonts} from '../assets/fonts/Fonts';
 import Home from '../screens/Home';
+import MyAppointments from '../screens/MyAppointments';
+import MyOrders from '../screens/MyOrders';
 
 const Drawer = createDrawerNavigator();
 
@@ -29,9 +31,19 @@ function CustomDrawerContent({navigation}) {
       <TouchableOpacity onPress={() => navigation.navigate('PasswordSaved')}>
         <Text style={styles.mail}>Password saved</Text>
       </TouchableOpacity>
+
       <TouchableOpacity onPress={() => navigation.navigate('Notifications')}>
         <Text style={styles.mail}>Notifications</Text>
       </TouchableOpacity>
+
+      <TouchableOpacity onPress={() => navigation.navigate('MyAppointments')}>
+        <Text style={styles.mail}>My Appointments</Text>
+      </TouchableOpacity>
+
+      <TouchableOpacity onPress={() => navigation.navigate('MyOrders')}>
+        <Text style={styles.mail}>My Orders</Text>
+      </TouchableOpacity>
+
       <TouchableOpacity onPress={() => navigation.navigate('LogOut')}>
         <Text style={[styles.headerText, {marginTop: 40}]}>Logout</Text>
       </TouchableOpacity>
@@ -46,6 +58,8 @@ export default function DrawerNav() {
       <Drawer.Screen name="Feed" component={Home} />
       <Drawer.Screen name="PasswordSaved" component={PasswordSaved} />
       <Drawer.Screen name="Notifications" component={Notifications} />
+      <Drawer.Screen name="MyAppointments" component={MyAppointments} />
+      <Drawer.Screen name="MyOrders" component={MyOrders} />
       <Drawer.Screen name="LogOut" component={LogOut} />
     </Drawer.Navigator>
   );

@@ -12,7 +12,6 @@ import {Colors} from '../assets/colors/Colors';
 import Back from '../assets/images/Back.svg';
 import Recover from '../assets/images/Recover.svg';
 import AppButton from '../components/AppButton';
-import MessageComp from '../components/MessageComp';
 import ContactComp from '../components/ContactComp';
 import AppInput from '../components/AppInput';
 
@@ -31,9 +30,13 @@ export default function RecoverPassword() {
 
     setLoading(true);
     try {
-      await axios.post(`${API_URL}/api/users/forget-password`, {email});
+      const response = await axios.post(
+        `${API_URL}/api/users/forget-password`,
+        {email},
+      );
+      const token = response.data.token;
       Alert.alert('Success', 'OTP has been sent to your email');
-      navigation.navigate('RecoverByEmail');
+      navigation.navigate('RecoverByEmail', {token});
     } catch (error) {
       const errorMessage =
         error.response && error.response.data
@@ -67,12 +70,6 @@ export default function RecoverPassword() {
         value={email}
         onChangeText={setEmail}
       />
-
-      {/* <MessageComp
-        image={require('../assets/images/Email.png')}
-        title="Via Email:"
-        subTitle="***ic16@gmail.com"
-      /> */}
 
       <View style={styles.btnView}>
         {loading ? (

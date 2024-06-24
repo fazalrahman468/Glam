@@ -1,58 +1,77 @@
+import React, {useEffect, useState} from 'react';
 import {
   View,
   Text,
   StyleSheet,
   FlatList,
-  Image,
+  ScrollView,
   TouchableOpacity,
+  Image,
 } from 'react-native';
-import React from 'react';
+import axios from 'axios';
 import {Colors} from '../assets/colors/Colors';
 import {Fonts} from '../assets/fonts/Fonts';
 import AppInput from '../components/AppInput';
 import ShoppingComp from '../components/ShoppingComp';
+import {useNavigation} from '@react-navigation/native';
 
 export default function Shopping() {
-  const data = [
-    {
-      id: '1',
-      title: 'Item 1',
-      image: require('../assets/images/Group18.png'),
-    },
-    {
-      id: '2',
-      title: 'Item 2',
-      image: require('../assets/images/Group16.png'),
-    },
-    {
-      id: '3',
-      title: 'Item 3',
-      image: require('../assets/images/Group18.png'),
-    },
-    {
-      id: '4',
-      title: 'Item 4',
-      image: require('../assets/images/Group16.png'),
-    },
-    {
-      id: '5',
-      title: 'Item 5',
-      image: require('../assets/images/Group18.png'),
-    },
-    {
-      id: '6',
-      title: 'Item 6',
-      image: require('../assets/images/Group16.png'),
-    },
-  ];
+  const [products, setProducts] = useState([]);
+  const [categories, setCategories] = useState([]);
+  const navigation = useNavigation();
+  const token =
+    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NjY3ZTlmNTBhODlkZWNmNzVjZTUxZGUiLCJ0eXBlIjoiYWRtaW4iLCJpYXQiOjE3MTg4NzI3OTB9.jFX7-viPGVlzbSZV8RJrKRfV8hQnMuYT6tS4UV-4MGk';
+
+  useEffect(() => {
+    fetchProducts();
+    fetchCategories();
+  }, []);
+
+  const fetchProducts = async () => {
+    try {
+      const response = await axios.get(
+        'https://glamparlor.onrender.com/api/product/all',
+        {
+          headers: {
+            'Content-Type': 'application/json',
+            'x-auth-token': `${token}`,
+          },
+        },
+      );
+      if (response?.data) {
+        setProducts(response?.data?.products);
+      }
+    } catch (error) {
+      console.log('Error fetching products:', error);
+    }
+  };
+
+  const fetchCategories = async () => {
+    try {
+      const response = await axios.get(
+        'https://glamparlor.onrender.com/api/cat/all/1',
+        {
+          headers: {
+            'Content-Type': 'application/json',
+            'x-auth-token': `${token}`,
+          },
+        },
+      );
+      if (response?.data) {
+        setCategories(response?.data?.category);
+      }
+    } catch (error) {
+      console.log('Error fetching categories:', error);
+    }
+  };
 
   const renderItem = ({item}) => (
     <TouchableOpacity
-      style={{
-        marginTop: 20,
-        marginLeft: 10,
-      }}>
-      <Image source={item.image} />
+      style={styles.itemContainer}
+      onPress={() => navigation.navigate('Description', {item})}>
+      <Image source={{uri: item.image}} style={styles.image} />
+      <Text style={styles.itemTitle}>{item.name}</Text>
+      <Text style={styles.itemPrice}>${item.price}</Text>
     </TouchableOpacity>
   );
 
@@ -60,29 +79,21 @@ export default function Shopping() {
     <View style={styles.cont}>
       <Text style={styles.text}>Catalog</Text>
       <AppInput placeholder="Search" />
-      <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
-        <ShoppingComp
-          title="All"
-          image={require('../assets/images/Rectangle12.png')}
-        />
-        <ShoppingComp
-          title="Hair"
-          image={require('../assets/images/Rectangle11.png')}
-        />
-        <ShoppingComp
-          title="Facials"
-          image={require('../assets/images/Rectangle9.png')}
-        />
-        <ShoppingComp
-          title="Nail Paints"
-          image={require('../assets/images/Rectangle10.png')}
-        />
-      </View>
+      <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+        {categories.map(category => (
+          <ShoppingComp
+            key={category._id}
+            title={category.name}
+            image={category.image}
+          />
+        ))}
+      </ScrollView>
       <FlatList
-        data={data}
+        data={products}
         renderItem={renderItem}
-        keyExtractor={item => item.id}
+        keyExtractor={item => item._id.toString()}
         numColumns={2}
+        columnWrapperStyle={styles.columnWrapper}
       />
     </View>
   );
@@ -98,5 +109,50 @@ const styles = StyleSheet.create({
     fontFamily: Fonts.bold,
     fontSize: 32,
     color: Colors.blackDark,
+  },
+  columnWrapper: {
+    justifyContent: 'space-between',
+  },
+  itemContainer: {
+    width: '48%',
+    backgroundColor: Colors.gray1,
+    borderRadius: 10,
+    padding: 12,
+    marginVertical: 10,
+  },
+  image: {
+    width: 120,
+    height: 100,
+    resizeMode: 'cover',
+    borderRadius: 10,
+    alignSelf: 'flex-end',
+  },
+  itemTitle: {
+    fontFamily: Fonts.semiBold,
+    fontSize: 20,
+    color: Colors.blackDark,
+    marginTop: 10,
+  },
+  itemPrice: {
+    fontFamily: Fonts.semiBold,
+    fontSize: 20,
+    color: Colors.blackDark,
+    marginTop: 5,
+  },
+  addButton: {
+    backgroundColor: Colors.black,
+    width: 30,
+    height: 30,
+    borderRadius: 15,
+    alignItems: 'center',
+    justifyContent: 'center',
+    position: 'absolute',
+    bottom: 10,
+    right: 10,
+  },
+  addButtonText: {
+    color: Colors.white,
+    fontSize: 20,
+    lineHeight: 20,
   },
 });

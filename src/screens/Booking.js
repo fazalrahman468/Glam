@@ -1,5 +1,14 @@
-import {View, Text, StyleSheet, ImageBackground, Image} from 'react-native';
-import React from 'react';
+import {
+  View,
+  Text,
+  StyleSheet,
+  ImageBackground,
+  Image,
+  ScrollView,
+  TouchableOpacity,
+} from 'react-native';
+import React, {useEffect, useState} from 'react';
+import axios from 'axios';
 import {Colors} from '../assets/colors/Colors';
 import {Fonts} from '../assets/fonts/Fonts';
 import ShoppingComp from '../components/ShoppingComp';
@@ -7,7 +16,33 @@ import CartButton from '../components/CartButton';
 import {useNavigation} from '@react-navigation/native';
 
 export default function Booking() {
+  const [categories, setCategories] = useState([]);
   const navigation = useNavigation();
+  const token =
+    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NjY3ZTlmNTBhODlkZWNmNzVjZTUxZGUiLCJ0eXBlIjoiYWRtaW4iLCJpYXQiOjE3MTg4NzI3OTB9.jFX7-viPGVlzbSZV8RJrKRfV8hQnMuYT6tS4UV-4MGk';
+
+  useEffect(() => {
+    fetchCategories();
+  }, []);
+
+  const fetchCategories = async () => {
+    try {
+      const response = await axios.get(
+        'https://glamparlor.onrender.com/api/service/all',
+        {
+          headers: {
+            'Content-Type': 'application/json',
+            'x-auth-token': `${token}`,
+          },
+        },
+      );
+      if (response?.data) {
+        setCategories(response?.data?.services);
+      }
+    } catch (error) {
+      console.log('Error fetching services:', error);
+    }
+  };
 
   return (
     <View style={styles.cont}>
@@ -30,47 +65,23 @@ export default function Booking() {
       </View>
       <View style={styles.cont1}>
         <Text style={styles.serText}>Services</Text>
-        <View style={styles.serView}>
-          <ShoppingComp
-            title="Makeup"
-            image={require('../assets/images/Makeup.png')}
-            onPress={() => navigation.navigate('Prices')}
-          />
-          <ShoppingComp
-            title="Hair Colors"
-            image={require('../assets/images/Hr.png')}
-          />
-          <ShoppingComp
-            title="Facials"
-            image={require('../assets/images/Facials.png')}
-          />
-          <ShoppingComp
-            title="Hair Style"
-            image={require('../assets/images/HairStyle.png')}
-          />
-          <ShoppingComp
-            title="Hair Cut"
-            image={require('../assets/images/HairCut.png')}
-          />
-          <ShoppingComp
-            title="Pedicure"
-            image={require('../assets/images/Pedicure.png')}
-          />
-          <ShoppingComp
-            title="Manicure"
-            image={require('../assets/images/Manicure.png')}
-          />
-          <ShoppingComp
-            title="Mehndi"
-            image={require('../assets/images/Mehndi.png')}
-          />
-        </View>
-        <View style={styles.btnView}>
-          <CartButton
-            title="Book Appointment"
-            onPress={() => navigation.navigate('Appointments')}
-          />
-        </View>
+        <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+          {categories.map(category => (
+            <ShoppingComp
+              key={category._id}
+              title={category.name}
+              image={category.image}
+              onPress={() =>
+                navigation.navigate('Prices', {
+                  title: category.name,
+                  image: category.image,
+                  price: category.price,
+                  serviceId: category._id,
+                })
+              }
+            />
+          ))}
+        </ScrollView>
       </View>
     </View>
   );
@@ -80,7 +91,6 @@ const styles = StyleSheet.create({
   cont: {
     backgroundColor: Colors.white,
     flex: 1,
-    justifyContent: 'space-between',
   },
   imgView: {
     width: '100%',
@@ -118,13 +128,5 @@ const styles = StyleSheet.create({
     fontFamily: Fonts.bold,
     fontSize: 32,
     color: Colors.blackDark,
-  },
-  serView: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    flexWrap: 'wrap',
-  },
-  btnView: {
-    marginTop: 20,
   },
 });
