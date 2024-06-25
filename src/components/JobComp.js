@@ -1,13 +1,17 @@
-import {View, Text, StyleSheet} from 'react-native';
+import {View, Text, StyleSheet, TouchableOpacity} from 'react-native';
 import React from 'react';
 import {Colors} from '../assets/colors/Colors';
 import {Fonts} from '../assets/fonts/Fonts';
 
-export default function JobComp({title}) {
+export default function JobComp({title, selected, onPress}) {
   return (
-    <View style={styles.cont}>
-      <Text style={styles.text}>{title}</Text>
-    </View>
+    <TouchableOpacity
+      onPress={onPress}
+      style={[styles.cont, selected && styles.selectedCont]}>
+      <Text style={[styles.text, selected && styles.selectedText]}>
+        {title}
+      </Text>
+    </TouchableOpacity>
   );
 }
 
@@ -22,9 +26,15 @@ const styles = StyleSheet.create({
     marginVertical: 10,
     width: '45%',
   },
+  selectedCont: {
+    backgroundColor: Colors.black,
+  },
   text: {
     fontFamily: Fonts.bold,
     fontSize: 13,
     color: Colors.black,
+  },
+  selectedText: {
+    color: Colors.white,
   },
 });

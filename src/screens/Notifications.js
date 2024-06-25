@@ -1,12 +1,85 @@
-import {View, Text, StyleSheet, Image, TouchableOpacity} from 'react-native';
-import React from 'react';
+import {
+  View,
+  Text,
+  StyleSheet,
+  Image,
+  TouchableOpacity,
+  FlatList,
+} from 'react-native';
+import React, {useEffect, useState} from 'react';
 import {Colors} from '../assets/colors/Colors';
 import NotificationComp from '../components/NotificationComp';
 import {Fonts} from '../assets/fonts/Fonts';
 import {useNavigation} from '@react-navigation/native';
+import axios from 'axios';
+import Swipeable from 'react-native-swipeable';
 
 export default function Notifications() {
   const navigation = useNavigation();
+  const [notifications, setNotifications] = useState([]);
+  const token =
+    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NjYwMDEwOGJmODYwZGNhOWNhYzRlNDYiLCJ0eXBlIjoiY3VzdG9tZXIiLCJpYXQiOjE3MTkzMTgwOTV9.KgwfDs3vCjIbCF2olBxB4qKRqQEY61FQwZmNVAGiLIE';
+
+  useEffect(() => {
+    const fetchNotifications = async () => {
+      try {
+        const response = await axios.get(
+          'https://glamparlor.onrender.com/api/notifications/all',
+          {
+            headers: {
+              'Content-Type': 'application/json',
+              'x-auth-token': `${token}`,
+            },
+          },
+        );
+        setNotifications(response.data.notifications);
+      } catch (error) {
+        console.error('Error fetching notifications:', error);
+      }
+    };
+
+    fetchNotifications();
+  }, []);
+
+  const handleDelete = async id => {
+    try {
+      await axios.delete(
+        `https://glamparlor.onrender.com/api/notifications/${id}`,
+        {
+          headers: {
+            'Content-Type': 'application/json',
+            'x-auth-token': `${token}`,
+          },
+        },
+      );
+      setNotifications(
+        notifications.filter(notification => notification._id !== id),
+      );
+    } catch (error) {
+      console.error('Error deleting notification:', error);
+    }
+  };
+
+  const renderItem = ({item}) => (
+    <Swipeable
+      rightButtons={[
+        <TouchableOpacity
+          style={styles.deleteButton}
+          onPress={() => handleDelete(item._id)}>
+          <Image
+            source={require('../assets/images/Delete.png')}
+            style={styles.deleteIcon}
+          />
+        </TouchableOpacity>,
+      ]}>
+      <NotificationComp
+        title={item.title}
+        subTitle={item.description}
+        seen={item.seen}
+        createdAt={item.createdAt}
+      />
+    </Swipeable>
+  );
 
   return (
     <View style={styles.cont}>
@@ -18,45 +91,10 @@ export default function Notifications() {
           <Text style={styles.text}>Notifications</Text>
         </View>
       </View>
-      <NotificationComp
-        title="Mention"
-        subTitle="Someone mentioned you"
-        image={require('../assets/images/At.png')}
-      />
-      <NotificationComp
-        title="People"
-        subTitle="Someone followed you"
-        image={require('../assets/images/People.png')}
-      />
-      <NotificationComp
-        title="Like"
-        subTitle="Someone liked you"
-        image={require('../assets/images/Red.png')}
-      />
-      <NotificationComp
-        title="Shop"
-        subTitle="Shopping items"
-        image={require('../assets/images/Bag.png')}
-      />
-      <NotificationComp
-        title="Appointments"
-        subTitle="Today's appointments"
-        image={require('../assets/images/Appo.png')}
-      />
-      <NotificationComp
-        title="Courses"
-        subTitle="Course Tutorials"
-        image={require('../assets/images/Cou.png')}
-      />
-      <NotificationComp
-        title="Jobs"
-        subTitle="Jobs forms"
-        image={require('../assets/images/Job.png')}
-      />
-      <NotificationComp
-        title="Feedback"
-        subTitle="Feedback "
-        image={require('../assets/images/Feedback.png')}
+      <FlatList
+        data={notifications}
+        renderItem={renderItem}
+        keyExtractor={item => item._id.toString()}
       />
     </View>
   );
@@ -77,5 +115,15 @@ const styles = StyleSheet.create({
     fontSize: 28,
     color: Colors.black,
     textAlign: 'center',
+  },
+  deleteButton: {
+    backgroundColor: Colors.red,
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: 75,
+  },
+  deleteIcon: {
+    width: 30,
+    height: 30,
   },
 });

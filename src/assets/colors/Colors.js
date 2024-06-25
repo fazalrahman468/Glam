@@ -15,4 +15,6 @@ export const Colors = {
   primary: '#123BCA',
   white: '#ffffff',
   yellow: '#FFDE33',
+  green: '#2AAA8A',
+  red: '#FF0000',
 };

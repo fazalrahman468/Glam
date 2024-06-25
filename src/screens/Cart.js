@@ -5,6 +5,7 @@ import {
   TouchableOpacity,
   FlatList,
   Alert,
+  ActivityIndicator,
 } from 'react-native';
 import React, {useState, useEffect} from 'react';
 import {Colors} from '../assets/colors/Colors';
@@ -20,6 +21,7 @@ export default function Cart() {
   const route = useRoute();
   const [cartItems, setCartItems] = useState([]);
   const [address, setAddress] = useState('');
+  const [loading, setLoading] = useState(false);
   const token =
     'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NjY3ZTlmNTBhODlkZWNmNzVjZTUxZGUiLCJ0eXBlIjoiYWRtaW4iLCJpYXQiOjE3MTkyMTMyODh9.9vC2u8nJB2YCbgTj6TdOdBVogoIdC2exAhbGw-9MbLA';
 
@@ -69,6 +71,8 @@ export default function Cart() {
       address,
     };
 
+    setLoading(true);
+
     try {
       const response = await axios.post(
         'https://glamparlor.onrender.com/api/order/create',
@@ -97,6 +101,8 @@ export default function Cart() {
           error.response?.data?.message || error.message
         }`,
       );
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -125,6 +131,11 @@ export default function Cart() {
           <Text style={styles.catalog}>Back to Catalog</Text>
         </TouchableOpacity>
       </View>
+      {loading && (
+        <View style={styles.loader}>
+          <ActivityIndicator size="large" color={Colors.primary} />
+        </View>
+      )}
     </View>
   );
 }
@@ -166,5 +177,12 @@ const styles = StyleSheet.create({
     color: Colors.black,
     textAlign: 'center',
     textDecorationLine: 'underline',
+  },
+  loader: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    zIndex: 10,
   },
 });
