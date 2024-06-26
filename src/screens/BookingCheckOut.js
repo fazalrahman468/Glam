@@ -14,6 +14,7 @@ import TotalComp from '../components/TotalComp';
 import CartButton from '../components/CartButton';
 import {useNavigation, useRoute} from '@react-navigation/native';
 import axios from 'axios';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function BookingCheckOut() {
   const navigation = useNavigation();
@@ -21,8 +22,22 @@ export default function BookingCheckOut() {
   const {date, time, selectedService} = route.params;
   const [services, setServices] = useState([selectedService]);
   const [loading, setLoading] = useState(false);
-  const token =
-    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NjY3ZTlmNTBhODlkZWNmNzVjZTUxZGUiLCJ0eXBlIjoiYWRtaW4iLCJpYXQiOjE3MTg4NzI3OTB9.jFX7-viPGVlzbSZV8RJrKRfV8hQnMuYT6tS4UV-4MGk';
+  const [token, setToken] = useState('');
+
+  useEffect(() => {
+    const getToken = async () => {
+      try {
+        const storedToken = await AsyncStorage.getItem('userToken');
+        if (storedToken) {
+          setToken(storedToken);
+        }
+      } catch (error) {
+        console.error('Failed to retrieve token from AsyncStorage', error);
+      }
+    };
+
+    getToken();
+  }, []);
 
   useEffect(() => {
     if (selectedService) {

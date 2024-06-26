@@ -53,13 +53,8 @@ export default function Login() {
     setLoading(true);
 
     try {
-      // console.log('Sending Login request:', {
-      //   email,
-      //   password,
-      //   fcm_token: '',
-      // });
       const response = await axios.post(`${API_URL}/api/auth`, {
-        email,
+        email: email.trim().toLocaleLowerCase(),
         password,
         fcm_token: '',
       });

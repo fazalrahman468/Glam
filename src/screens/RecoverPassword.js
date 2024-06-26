@@ -32,7 +32,7 @@ export default function RecoverPassword() {
     try {
       const response = await axios.post(
         `${API_URL}/api/users/forget-password`,
-        {email},
+        {email: email.trim().toLocaleLowerCase()},
       );
       const token = response.data.token;
       Alert.alert('Success', 'OTP has been sent to your email');
@@ -92,9 +92,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   btnView: {
-    position: 'absolute',
+    // position: 'absolute',
     bottom: 10,
     width: '100%',
-    left: 20,
+    top: 20,
   },
 });

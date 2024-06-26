@@ -1,39 +1,109 @@
-import {View, Text, StyleSheet, Image} from 'react-native';
-import React from 'react';
+import {
+  View,
+  Text,
+  StyleSheet,
+  Image,
+  Alert,
+  ActivityIndicator,
+} from 'react-native';
+import React, {useState} from 'react';
 import {Colors} from '../assets/colors/Colors';
 import {Fonts} from '../assets/fonts/Fonts';
 import AppInput from '../components/AppInput';
 import AppButton from '../components/AppButton';
+import axios from 'axios';
+import {useNavigation} from '@react-navigation/native';
 
 export default function Feedback() {
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [msg, setMsg] = useState('');
+  const [loading, setLoading] = useState(false);
+  const navigation = useNavigation();
+
+  const token =
+    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NjYwMDEwOGJmODYwZGNhOWNhYzRlNDYiLCJ0eXBlIjoiY3VzdG9tZXIiLCJpYXQiOjE3MTkzODQyMjV9.PR98bYKOChlTiuWE4Z9XRSohDlOKs5qlSnyY3f9aqT8';
+
+  const handleSubmit = async () => {
+    // Email validation regex
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    if (!name || !email || !msg) {
+      Alert.alert('Error', 'Please fill all fields.');
+      return;
+    }
+
+    if (!emailRegex.test(email)) {
+      Alert.alert('Error', 'Please enter a valid email address.');
+      return;
+    }
+
+    setLoading(true);
+
+    try {
+      const response = await axios.post(
+        'https://glamparlor.onrender.com/api/feedback/create',
+        {
+          name,
+          email,
+          msg,
+        },
+        {
+          headers: {
+            'Content-Type': 'application/json',
+            'x-auth-token': `${token}`,
+          },
+        },
+      );
+
+      if (response.data.success) {
+        Alert.alert('Success', 'Your feedback has been submitted.');
+        setName('');
+        setEmail('');
+        setMsg('');
+        navigation.navigate('Home');
+      }
+    } catch (error) {
+      Alert.alert('Error', 'Something went wrong. Please try again.');
+      console.log(error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <View style={styles.cont}>
       <Text style={styles.text}>
         Overall, how would you rate your experience?
       </Text>
-      <View style={styles.ratingView}>
-        <Image source={require('../assets/images/Round.png')} />
-        <Text style={styles.ratingText}>Excellent</Text>
+
+      <AppInput
+        text="Name"
+        placeholder="name"
+        value={name}
+        onChangeText={setName}
+      />
+      <AppInput
+        text="Email"
+        placeholder="email"
+        value={email}
+        onChangeText={setEmail}
+      />
+      <AppInput
+        text="Message"
+        placeholder="message"
+        value={msg}
+        onChangeText={setMsg}
+      />
+
+      <View style={styles.btnView}>
+        <AppButton title="Submit" onPress={handleSubmit} />
       </View>
-      <View style={styles.ratingView}>
-        <Image source={require('../assets/images/Round.png')} />
-        <Text style={styles.ratingText}>Average</Text>
-      </View>
-      <View style={styles.ratingView}>
-        <Image source={require('../assets/images/Round.png')} />
-        <Text style={styles.ratingText}>Poor</Text>
-      </View>
-      <Text style={styles.text}>How can we improve our services?</Text>
-      <AppInput placeholder="Type Here..." />
-      <View
-        style={{
-          alignItems: 'center',
-          justifyContent: 'center',
-        }}>
-        <View style={styles.btnView}>
-          <AppButton title="Submit" />
+      {loading && (
+        <View style={styles.loader}>
+          <ActivityIndicator size="large" color={Colors.primary} />
         </View>
-      </View>
+      )}
     </View>
   );
 }
@@ -43,7 +113,6 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.white,
     flex: 1,
     padding: 20,
-    justifyContent: 'center',
   },
   text: {
     fontFamily: Fonts.semiBold,
@@ -63,7 +132,14 @@ const styles = StyleSheet.create({
     marginLeft: 12,
   },
   btnView: {
-    width: '40%',
+    width: '100%',
     marginTop: 20,
+  },
+  loader: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    zIndex: 10,
   },
 });

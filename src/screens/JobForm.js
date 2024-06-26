@@ -25,7 +25,6 @@ export default function JobForm() {
   };
 
   const handleSubmit = async () => {
-    // Email validation regex
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
     if (!firstName || !lastName || !email || !message || !selectedJobTitle) {

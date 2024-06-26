@@ -74,7 +74,7 @@ export default function RecoverByEmail() {
         <OTPInputView
           style={styles.otp}
           pinCount={6}
-          autoFocusOnLoad
+          autoFocusOnLoad={false}
           codeInputFieldStyle={styles.underlineStyleBase}
           codeInputHighlightStyle={styles.underlineStyleHighLighted}
           onCodeFilled={setOtp}

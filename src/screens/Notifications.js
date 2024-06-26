@@ -61,24 +61,22 @@ export default function Notifications() {
   };
 
   const renderItem = ({item}) => (
-    <Swipeable
-      rightButtons={[
-        <TouchableOpacity
-          style={styles.deleteButton}
-          onPress={() => handleDelete(item._id)}>
-          <Image
-            source={require('../assets/images/Delete.png')}
-            style={styles.deleteIcon}
-          />
-        </TouchableOpacity>,
-      ]}>
+    <View style={styles.notificationContainer}>
       <NotificationComp
         title={item.title}
         subTitle={item.description}
         seen={item.seen}
         createdAt={item.createdAt}
       />
-    </Swipeable>
+      <TouchableOpacity
+        style={styles.deleteButton}
+        onPress={() => handleDelete(item._id)}>
+        <Image
+          source={require('../assets/images/Delete.png')}
+          style={styles.deleteIcon}
+        />
+      </TouchableOpacity>
+    </View>
   );
 
   return (
@@ -117,13 +115,18 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   deleteButton: {
-    backgroundColor: Colors.red,
     justifyContent: 'center',
     alignItems: 'center',
-    width: 75,
   },
   deleteIcon: {
     width: 30,
     height: 30,
+  },
+  notificationContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingVertical: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: Colors.lightGray,
   },
 });

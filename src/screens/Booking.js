@@ -12,14 +12,12 @@ import axios from 'axios';
 import {Colors} from '../assets/colors/Colors';
 import {Fonts} from '../assets/fonts/Fonts';
 import ShoppingComp from '../components/ShoppingComp';
-import CartButton from '../components/CartButton';
 import {useNavigation} from '@react-navigation/native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function Booking() {
   const [categories, setCategories] = useState([]);
   const navigation = useNavigation();
-  const token =
-    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NjY3ZTlmNTBhODlkZWNmNzVjZTUxZGUiLCJ0eXBlIjoiYWRtaW4iLCJpYXQiOjE3MTg4NzI3OTB9.jFX7-viPGVlzbSZV8RJrKRfV8hQnMuYT6tS4UV-4MGk';
 
   useEffect(() => {
     fetchCategories();
@@ -27,12 +25,17 @@ export default function Booking() {
 
   const fetchCategories = async () => {
     try {
+      const token = await AsyncStorage.getItem('userToken');
+      if (!token) {
+        throw new Error('User not authenticated');
+      }
+
       const response = await axios.get(
         'https://glamparlor.onrender.com/api/service/all',
         {
           headers: {
             'Content-Type': 'application/json',
-            'x-auth-token': `${token}`,
+            'x-auth-token': token,
           },
         },
       );

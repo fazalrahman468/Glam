@@ -6,17 +6,15 @@ import {Fonts} from '../assets/fonts/Fonts';
 export default function NotificationComp({title, subTitle, seen, createdAt}) {
   return (
     <View style={styles.cont}>
-      <View style={styles.menView}>
-        <Text style={styles.menText}>{title}</Text>
-        <Text style={styles.subText}>{subTitle}</Text>
-        <Text style={styles.dateText}>
-          {new Date(createdAt).toLocaleString()}
-        </Text>
-        <Text
-          style={[styles.seenText, {color: seen ? Colors.green : Colors.red}]}>
-          {seen ? 'Seen' : 'Unseen'}
-        </Text>
-      </View>
+      <Text style={styles.menText}>{title}</Text>
+      <Text style={styles.subText}>{subTitle}</Text>
+      <Text style={styles.dateText}>
+        {new Date(createdAt).toLocaleString()}
+      </Text>
+      <Text
+        style={[styles.seenText, {color: seen ? Colors.green : Colors.red}]}>
+        {seen ? 'Seen' : 'Unseen'}
+      </Text>
     </View>
   );
 }
@@ -24,16 +22,10 @@ export default function NotificationComp({title, subTitle, seen, createdAt}) {
 const styles = StyleSheet.create({
   cont: {
     backgroundColor: Colors.white,
-    flexDirection: 'row',
     marginTop: 20,
-    alignItems: 'center',
     borderBottomWidth: 1,
     borderColor: Colors.gray,
     paddingBottom: 20,
-  },
-  menView: {
-    flex: 1,
-    marginLeft: 15,
   },
   menText: {
     fontFamily: Fonts.semiBold,
