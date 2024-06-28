@@ -116,5 +116,6 @@ const styles = StyleSheet.create({
   icon: {
     flexDirection: 'row',
     alignItems: 'center',
+    marginTop: 10,
   },
 });

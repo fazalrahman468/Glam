@@ -16,9 +16,10 @@ import ShoppingComp from '../components/ShoppingComp';
 import {useNavigation} from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-export default function Shopping() {
+export default function Shopping({selected}) {
   const [products, setProducts] = useState([]);
   const [categories, setCategories] = useState([]);
+  const [selectedCategory, setSelectedCategory] = useState(null);
   const [token, setToken] = useState('');
   const navigation = useNavigation();
 
@@ -77,6 +78,34 @@ export default function Shopping() {
     }
   };
 
+  const fetchProductsByCategory = async categoryId => {
+    try {
+      const response = await axios.get(
+        `https://glamparlor.onrender.com/api/product/${categoryId}`,
+        {
+          headers: {
+            'Content-Type': 'application/json',
+            'x-auth-token': token,
+          },
+        },
+      );
+      if (response?.data) {
+        setProducts(response?.data?.products);
+      }
+    } catch (error) {
+      console.log('Error fetching products by category:', error);
+    }
+  };
+
+  const handleCategorySelect = categoryId => {
+    if (categoryId === 'all') {
+      fetchProducts(token);
+    } else {
+      fetchProductsByCategory(categoryId);
+    }
+    setSelectedCategory(categoryId);
+  };
+
   const renderItem = ({item}) => (
     <TouchableOpacity
       style={styles.itemContainer}
@@ -94,12 +123,29 @@ export default function Shopping() {
         placeholder="Search"
         image={require('../assets/images/Sea.png')}
       />
-      <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+      <ScrollView
+        horizontal
+        showsHorizontalScrollIndicator={false}
+        contentContainerStyle={styles.scroll}>
+        <TouchableOpacity
+          style={[
+            styles.allCategoriesButton,
+            selected && styles.selectedContainer,
+          ]}
+          onPress={() => handleCategorySelect('all')}>
+          <Image source={require('../assets/images/Rectangle12.png')} />
+          <Text
+            style={[styles.allCategoriesText, selected && styles.selectedText]}>
+            All
+          </Text>
+        </TouchableOpacity>
         {categories.map(category => (
           <ShoppingComp
             key={category._id}
             title={category.name}
             image={category.image}
+            onPress={() => handleCategorySelect(category._id)}
+            selected={selectedCategory === category._id}
           />
         ))}
       </ScrollView>
@@ -109,6 +155,7 @@ export default function Shopping() {
         keyExtractor={item => item._id.toString()}
         numColumns={2}
         columnWrapperStyle={styles.columnWrapper}
+        contentContainerStyle={{marginTop: 25}}
       />
     </View>
   );
@@ -124,6 +171,10 @@ const styles = StyleSheet.create({
     fontFamily: Fonts.osBold,
     fontSize: 32,
     color: Colors.blackDark,
+  },
+  scroll: {
+    height: 120,
+    marginTop: 30,
   },
   columnWrapper: {
     justifyContent: 'space-between',
@@ -154,20 +205,27 @@ const styles = StyleSheet.create({
     color: Colors.blackDark,
     marginTop: 5,
   },
-  addButton: {
-    backgroundColor: Colors.black,
-    width: 30,
-    height: 30,
-    borderRadius: 15,
+  allCategoriesButton: {
+    backgroundColor: Colors.gray1,
+    padding: 12,
+    borderRadius: 10,
+    marginRight: 10,
     alignItems: 'center',
-    justifyContent: 'center',
-    position: 'absolute',
-    bottom: 10,
-    right: 10,
+    height: 120,
   },
-  addButtonText: {
+  allCategoriesText: {
+    fontFamily: Fonts.osBold,
+    fontSize: 15,
+    color: Colors.grayLight,
+    marginTop: 10,
+  },
+  selectedText: {
     color: Colors.white,
-    fontSize: 20,
-    lineHeight: 20,
+  },
+  selectedContainer: {
+    backgroundColor: Colors.blueDark,
+    borderRadius: 10,
+    padding: 8,
+    height: 120,
   },
 });

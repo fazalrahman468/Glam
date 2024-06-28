@@ -1,11 +1,32 @@
 import React from 'react';
-import {View, Text, Image} from 'react-native';
+import {View, Text, Image, StyleSheet} from 'react-native';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import Search from '../screens/Search';
 import Cart from '../screens/Cart';
 import Shopping from '../screens/Shopping';
+import {useCart} from '../components/CartContext'; // Adjust the path as necessary
+import {Colors} from '../assets/colors/Colors';
+import {Fonts} from '../assets/fonts/Fonts';
 
 const Tab = createBottomTabNavigator();
+
+const CartIconWithBadge = ({color}) => {
+  const {cartItems} = useCart();
+
+  return (
+    <View>
+      <Image
+        source={require('../assets/images/Shop.png')}
+        style={{tintColor: color}}
+      />
+      {cartItems.length > 0 && (
+        <View style={styles.badge}>
+          <Text style={styles.badgeText}>{cartItems.length}</Text>
+        </View>
+      )}
+    </View>
+  );
+};
 
 export default function BottomTab() {
   return (
@@ -21,7 +42,7 @@ export default function BottomTab() {
           } else if (route.name === 'Search') {
             iconName = require('../assets/images/Search.png');
           } else if (route.name === 'Cart') {
-            iconName = require('../assets/images/Shop.png');
+            return <CartIconWithBadge color={color} />;
           }
 
           return <Image source={iconName} style={{tintColor: color}} />;
@@ -34,3 +55,23 @@ export default function BottomTab() {
     </Tab.Navigator>
   );
 }
+
+const styles = StyleSheet.create({
+  badge: {
+    position: 'absolute',
+    right: -20,
+    top: -20,
+    backgroundColor: Colors.blueButton,
+    borderRadius: 6,
+    width: 24,
+    height: 24,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 12,
+  },
+  badgeText: {
+    color: Colors.white,
+    fontSize: 16,
+    fontFamily: Fonts.semiBold,
+  },
+});

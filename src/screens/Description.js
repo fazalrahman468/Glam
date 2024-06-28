@@ -40,30 +40,33 @@ export default function Description() {
           <Image source={require('../assets/images/Arrow.png')} />
         </TouchableOpacity>
       </ImageBackground>
-      <View style={styles.qtyView}>
-        <Star />
-      </View>
-      <View style={styles.cont1}>
-        <Text style={styles.qtyText}>Quantity</Text>
-        <View style={styles.descButtons}>
-          <TouchableOpacity onPress={decreaseQuantity}>
-            <Text style={styles.buttonText}>-</Text>
-          </TouchableOpacity>
-          <Text style={styles.quantityText}>{quantity}</Text>
-          <TouchableOpacity onPress={increaseQuantity}>
-            <Text style={styles.buttonText}>+</Text>
-          </TouchableOpacity>
+
+      <View style={styles.container}>
+        <View style={styles.qtyView}>
+          <Star />
         </View>
-        <Text style={styles.about}>About</Text>
-        <Text style={styles.det}>{item.description}</Text>
-      </View>
-      <View style={styles.btnView}>
-        <CartButton
-          title={`Add to cart | $${totalPrice.toFixed(2)}`}
-          onPress={() =>
-            navigation.navigate('Cart', {item, quantity, productId: item._id})
-          }
-        />
+        <View style={styles.cont1}>
+          <Text style={styles.qtyText}>Quantity</Text>
+          <View style={styles.descButtons}>
+            <TouchableOpacity onPress={decreaseQuantity}>
+              <Text style={styles.buttonText}>-</Text>
+            </TouchableOpacity>
+            <Text style={styles.quantityText}>{quantity}</Text>
+            <TouchableOpacity onPress={increaseQuantity}>
+              <Text style={styles.buttonText}>+</Text>
+            </TouchableOpacity>
+          </View>
+          <Text style={styles.about}>About</Text>
+          <Text style={styles.det}>{item.description}</Text>
+        </View>
+        <View style={styles.btnView}>
+          <CartButton
+            title={`Add to cart | $${totalPrice.toFixed(2)}`}
+            onPress={() =>
+              navigation.navigate('Cart', {item, quantity, productId: item._id})
+            }
+          />
+        </View>
       </View>
     </View>
   );
@@ -81,16 +84,22 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   qtyView: {
-    backgroundColor: Colors.white,
     alignItems: 'flex-end',
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
-    marginTop: -30,
+    marginTop: 10,
   },
   qtyText: {
     fontFamily: Fonts.osBold,
     fontSize: 30,
     color: Colors.balckLight,
+  },
+  container: {
+    flex: 1,
+    borderTopLeftRadius: 40,
+    borderTopRightRadius: 40,
+    marginTop: -30,
+    backgroundColor: Colors.white,
   },
   cont1: {
     marginLeft: 20,
