@@ -36,7 +36,6 @@ const styles = StyleSheet.create({
   cont: {
     flexDirection: 'row',
     marginTop: 30,
-    alignItems: 'center',
   },
   img: {
     width: 130,
@@ -55,7 +54,7 @@ const styles = StyleSheet.create({
     padding: 10,
   },
   text: {
-    fontFamily: Fonts.semiBold,
+    fontFamily: Fonts.osSemiBold,
     fontSize: 20,
     color: Colors.blackDark,
   },

@@ -24,7 +24,7 @@ const styles = StyleSheet.create({
     borderRadius: 12,
   },
   title: {
-    fontFamily: Fonts.bold,
+    fontFamily: Fonts.osBold,
     fontSize: 18,
     color: Colors.blueButton,
   },

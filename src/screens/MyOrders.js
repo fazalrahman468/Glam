@@ -2,87 +2,94 @@ import {
   View,
   Text,
   StyleSheet,
-  FlatList,
+  ScrollView,
   ActivityIndicator,
   Alert,
-  ScrollView,
+  Image,
+  TouchableOpacity,
 } from 'react-native';
 import React, {useState, useEffect} from 'react';
-import {Colors} from '../assets/colors/Colors';
 import axios from 'axios';
+import {Colors} from '../assets/colors/Colors';
 import {Fonts} from '../assets/fonts/Fonts';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import OrderComp from '../components/OrderComp';
+import {useNavigation} from '@react-navigation/native';
+
+const API_URL = 'https://glamparlor.onrender.com';
 
 export default function MyOrders() {
-  const [appointments, setAppointments] = useState([]);
+  const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
-  const token =
-    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NjY3ZTlmNTBhODlkZWNmNzVjZTUxZGUiLCJ0eXBlIjoiYWRtaW4iLCJpYXQiOjE3MTkyMTMyODh9.9vC2u8nJB2YCbgTj6TdOdBVogoIdC2exAhbGw-9MbLA';
+  const navigation = useNavigation();
 
   useEffect(() => {
-    const fetchAppointments = async () => {
+    const fetchOrders = async () => {
       try {
-        const response = await axios.get(
-          'https://glamparlor.onrender.com/api/order/all',
-          {
-            headers: {
-              'Content-Type': 'application/json',
-              'x-auth-token': `${token}`,
-            },
+        const token = await AsyncStorage.getItem('userToken');
+        const response = await axios.get(`${API_URL}/api/order/all`, {
+          headers: {
+            'Content-Type': 'application/json',
+            'x-auth-token': token,
           },
-        );
-        console.log(response.data);
-        setAppointments(response.data.orders);
+        });
+        setOrders(response.data.orders);
       } catch (error) {
         console.error(error);
-        Alert.alert('Error', 'There was an error fetching the appointments');
+        Alert.alert('Error', 'There was an error fetching the orders');
       } finally {
         setLoading(false);
       }
     };
 
-    fetchAppointments();
+    fetchOrders();
   }, []);
 
-  const renderProduct = ({item}) => (
-    <View style={styles.row}>
-      <Text style={styles.cell}>{item.product.name}</Text>
-      <Text style={styles.cell}>{item.product.description}</Text>
-      <Text style={styles.cell}>{item.product.price}</Text>
-      <Text style={styles.cell}>{item.amount}</Text>
-    </View>
+  const renderProduct = ({item, status}) => (
+    <OrderComp
+      image={item.product.image}
+      title={item.product.name}
+      description={item.product.description}
+      price={item.product.price}
+      totalAmount={item.amount}
+      status={status}
+    />
   );
 
-  const renderAppointment = ({item}) => (
+  const renderOrder = ({item}) => (
     <View style={styles.orderContainer}>
-      <Text style={styles.statusText}>Status: {item.status}</Text>
-      <FlatList
-        data={item.cartData}
-        keyExtractor={item => item._id}
-        renderItem={renderProduct}
-      />
+      {/* <Text style={styles.statusText}>Status: {item.status}</Text> */}
+      <Text style={styles.statusText}>Order List</Text>
+      {item.cartData.map(cartItem => (
+        <View key={cartItem._id}>
+          {renderProduct({item: cartItem, status: item.status})}
+        </View>
+      ))}
     </View>
   );
 
   return (
-    <View style={styles.cont}>
-      <Text style={styles.header}>My Orders</Text>
+    <View style={styles.container}>
+      <View style={styles.headerView}>
+        <TouchableOpacity onPress={() => navigation.goBack()}>
+          <Image source={require('../assets/images/Back.png')} />
+        </TouchableOpacity>
+        <View style={styles.orderView}>
+          <Text style={styles.header}>My Orders</Text>
+        </View>
+      </View>
       {loading ? (
         <ActivityIndicator size="large" color={Colors.black} />
+      ) : orders.length === 0 ? (
+        <Text style={styles.noOrdersText}>No orders found.</Text>
       ) : (
         <ScrollView>
-          <View style={styles.table}>
-            <View style={styles.headerRow}>
-              <Text style={styles.headerCell}>Product Name</Text>
-              <Text style={styles.headerCell}>Description</Text>
-              <Text style={styles.headerCell}>Price</Text>
-              <Text style={styles.headerCell}>Amount</Text>
+          {orders.map((order, index) => (
+            <View key={index.toString()}>
+              {renderOrder({item: order})}
+              <View style={styles.separator} />
             </View>
-            <FlatList
-              data={appointments}
-              keyExtractor={item => item._id}
-              renderItem={renderAppointment}
-            />
-          </View>
+          ))}
         </ScrollView>
       )}
     </View>
@@ -90,55 +97,32 @@ export default function MyOrders() {
 }
 
 const styles = StyleSheet.create({
-  cont: {
-    backgroundColor: Colors.white,
+  container: {
     flex: 1,
-    padding: 10,
+    backgroundColor: Colors.white,
+    padding: 15,
+  },
+  headerView: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  orderView: {
+    flex: 1,
+    marginLeft: 20,
   },
   header: {
-    fontSize: 24,
-    fontFamily: Fonts.bold,
+    fontSize: 32,
+    fontFamily: Fonts.osBold,
     color: Colors.black,
     textAlign: 'center',
-    marginBottom: 20,
     marginVertical: 20,
   },
-  table: {
-    borderWidth: 1,
-    borderColor: Colors.blueDark,
-    borderRadius: 10,
-    overflow: 'hidden',
-  },
-  headerRow: {
-    flexDirection: 'row',
-    borderBottomWidth: 2,
-    borderBottomColor: Colors.blueDark,
-    backgroundColor: Colors.lightGray,
-  },
-  headerCell: {
-    flex: 1,
-    fontSize: 16,
-    fontWeight: 'bold',
+  noOrdersText: {
+    fontFamily: Fonts.regular,
+    fontSize: 18,
+    color: Colors.gray,
     textAlign: 'center',
-    paddingVertical: 10,
-    borderRightWidth: 1,
-    borderRightColor: Colors.blueDark,
-    color: Colors.black,
-  },
-  row: {
-    flexDirection: 'row',
-    borderWidth: 1,
-    borderBottomColor: Colors.blueDark,
-    borderRadius: 2,
-  },
-  cell: {
-    flex: 1,
-    fontSize: 16,
-    textAlign: 'center',
-    paddingVertical: 10,
-    borderRightWidth: 1,
-    borderRightColor: Colors.blueDark,
-    color: Colors.black,
+    marginTop: 20,
   },
   orderContainer: {
     marginTop: 20,
@@ -150,5 +134,10 @@ const styles = StyleSheet.create({
     textAlign: 'left',
     marginBottom: 10,
     marginLeft: 10,
+  },
+  separator: {
+    height: 1,
+    backgroundColor: Colors.lightGray,
+    marginVertical: 10,
   },
 });

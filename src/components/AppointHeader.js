@@ -1,12 +1,17 @@
-import {View, Text, StyleSheet, Image} from 'react-native';
+import {View, Text, StyleSheet, Image, TouchableOpacity} from 'react-native';
 import React from 'react';
 import {Colors} from '../assets/colors/Colors';
 import {Fonts} from '../assets/fonts/Fonts';
+import {useNavigation} from '@react-navigation/native';
 
 export default function AppointHeader() {
+  const navigation = useNavigation();
+
   return (
     <View style={styles.cont}>
-      <Image source={require('../assets/images/Group23.png')} />
+      <TouchableOpacity onPress={() => navigation.goBack()}>
+        <Image source={require('../assets/images/Group23.png')} />
+      </TouchableOpacity>
       <Text style={styles.text}>Schedule Appointment</Text>
       <Image source={require('../assets/images/Group24.png')} />
     </View>

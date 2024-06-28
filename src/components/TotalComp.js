@@ -41,13 +41,13 @@ const styles = StyleSheet.create({
     marginVertical: 5,
   },
   text: {
-    fontFamily: Fonts.bold,
-    fontSize: 18,
+    fontFamily: Fonts.osSemiBold,
+    fontSize: 25,
     color: Colors.gray2,
   },
   subText: {
-    fontFamily: Fonts.bold,
-    fontSize: 18,
+    fontFamily: Fonts.osSemiBold,
+    fontSize: 25,
     color: Colors.black,
   },
 });

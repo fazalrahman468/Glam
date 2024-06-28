@@ -1,3 +1,4 @@
+import React, {useState, useEffect} from 'react';
 import {
   View,
   Text,
@@ -7,7 +8,6 @@ import {
   Alert,
   ActivityIndicator,
 } from 'react-native';
-import React, {useState, useEffect} from 'react';
 import {Colors} from '../assets/colors/Colors';
 import {Fonts} from '../assets/fonts/Fonts';
 import CartComp from '../components/CartComp';
@@ -15,6 +15,9 @@ import CartButton from '../components/CartButton';
 import {useNavigation, useRoute} from '@react-navigation/native';
 import AppInput from '../components/AppInput';
 import axios from 'axios';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
+const API_URL = 'https://glamparlor.onrender.com';
 
 export default function Cart() {
   const navigation = useNavigation();
@@ -22,10 +25,19 @@ export default function Cart() {
   const [cartItems, setCartItems] = useState([]);
   const [address, setAddress] = useState('');
   const [loading, setLoading] = useState(false);
-  const token =
-    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NjY3ZTlmNTBhODlkZWNmNzVjZTUxZGUiLCJ0eXBlIjoiYWRtaW4iLCJpYXQiOjE3MTkyMTMyODh9.9vC2u8nJB2YCbgTj6TdOdBVogoIdC2exAhbGw-9MbLA';
+  const [token, setToken] = useState('');
 
   useEffect(() => {
+    AsyncStorage.getItem('userToken')
+      .then(token => {
+        if (token) {
+          setToken(token);
+        }
+      })
+      .catch(error => {
+        console.error('Error retrieving token from AsyncStorage:', error);
+      });
+
     if (route.params?.item && route.params?.quantity) {
       setCartItems(prevItems => [
         ...prevItems,
@@ -75,7 +87,7 @@ export default function Cart() {
 
     try {
       const response = await axios.post(
-        'https://glamparlor.onrender.com/api/order/create',
+        `${API_URL}/api/order/create`,
         orderData,
         {
           headers: {
@@ -107,82 +119,79 @@ export default function Cart() {
   };
 
   return (
-    <View style={styles.cont}>
-      <Text style={styles.text}>{cartItems.length} items in Cart</Text>
-      <View style={styles.cartView}>
+    <View style={styles.container}>
+      <Text style={styles.header}>{cartItems.length} items in Cart</Text>
+      <View style={styles.cartList}>
         <FlatList
           data={cartItems}
           renderItem={renderItem}
           keyExtractor={(item, index) => index.toString()}
         />
       </View>
-      <View style={styles.totalView}>
-        <Text style={styles.text}>Total :</Text>
-        <Text style={styles.total}>${getTotal().toFixed(2)}</Text>
+      <View style={styles.totalContainer}>
+        <Text style={styles.totalText}>Total :</Text>
+        <Text style={styles.totalAmount}>${getTotal().toFixed(2)}</Text>
       </View>
       <AppInput
         placeholder="Address"
         value={address}
         onChangeText={setAddress}
       />
-      <View style={styles.btnView}>
-        <CartButton title="checkout" onPress={handleCheckout} />
+      <View style={styles.buttonContainer}>
+        {loading ? (
+          <ActivityIndicator size="large" color={Colors.primary} />
+        ) : (
+          <CartButton title="Checkout" onPress={handleCheckout} />
+        )}
         <TouchableOpacity onPress={() => navigation.navigate('Shopping')}>
-          <Text style={styles.catalog}>Back to Catalog</Text>
+          <Text style={styles.backToCatalog}>Back to Catalog</Text>
         </TouchableOpacity>
       </View>
-      {loading && (
-        <View style={styles.loader}>
-          <ActivityIndicator size="large" color={Colors.primary} />
-        </View>
-      )}
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  cont: {
-    backgroundColor: Colors.white,
+  container: {
     flex: 1,
+    backgroundColor: Colors.white,
     padding: 20,
   },
-  text: {
-    fontFamily: Fonts.bold,
+  header: {
+    fontFamily: Fonts.osBold,
     fontSize: 32,
     color: Colors.blackDark,
   },
-  cartView: {
+  cartList: {
     flex: 1,
-    paddingVertical: 30,
+    paddingVertical: 20,
     borderBottomWidth: 1,
-    borderColor: Colors.black,
+    borderBottomColor: Colors.black,
   },
-  totalView: {
+  totalContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     marginTop: 20,
   },
-  total: {
-    fontFamily: Fonts.semiBold,
+  totalText: {
+    fontFamily: Fonts.osSemiBold,
     fontSize: 25,
     color: Colors.blackDark,
   },
-  btnView: {
+  totalAmount: {
+    fontFamily: Fonts.osSemiBold,
+    fontSize: 25,
+    color: Colors.blackDark,
+  },
+  buttonContainer: {
     flex: 1,
     justifyContent: 'space-evenly',
   },
-  catalog: {
-    fontFamily: Fonts.regular,
+  backToCatalog: {
+    fontFamily: Fonts.osRegular,
     fontSize: 25,
-    color: Colors.black,
+    color: Colors.blueButton,
     textAlign: 'center',
     textDecorationLine: 'underline',
-  },
-  loader: {
-    ...StyleSheet.absoluteFillObject,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-    justifyContent: 'center',
-    alignItems: 'center',
-    zIndex: 10,
   },
 });

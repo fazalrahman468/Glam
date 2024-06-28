@@ -2,34 +2,41 @@ import {
   View,
   Text,
   StyleSheet,
-  FlatList,
+  ScrollView,
   ActivityIndicator,
   Alert,
+  TouchableOpacity,
+  Image,
 } from 'react-native';
 import React, {useState, useEffect} from 'react';
 import {Colors} from '../assets/colors/Colors';
 import axios from 'axios';
 import {Fonts} from '../assets/fonts/Fonts';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import AppointmentComp from '../components/AppointmentComp';
+import {useNavigation} from '@react-navigation/native';
+
+const API_URL = 'https://glamparlor.onrender.com';
 
 export default function MyAppointments() {
   const [appointments, setAppointments] = useState([]);
   const [loading, setLoading] = useState(true);
-  const token =
-    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NjY3ZTlmNTBhODlkZWNmNzVjZTUxZGUiLCJ0eXBlIjoiYWRtaW4iLCJpYXQiOjE3MTkyMTMyODh9.9vC2u8nJB2YCbgTj6TdOdBVogoIdC2exAhbGw-9MbLA';
+  const navigation = useNavigation();
 
   useEffect(() => {
     const fetchAppointments = async () => {
       try {
-        const response = await axios.get(
-          'https://glamparlor.onrender.com/api/appointment/all',
-          {
-            headers: {
-              'Content-Type': 'application/json',
-              'x-auth-token': `${token}`,
-            },
+        const token = await AsyncStorage.getItem('userToken');
+        if (!token) {
+          setLoading(false);
+          return;
+        }
+        const response = await axios.get(`${API_URL}/api/appointment/all`, {
+          headers: {
+            'Content-Type': 'application/json',
+            'x-auth-token': token,
           },
-        );
-        console.log(response.data);
+        });
         setAppointments(response.data.orders);
       } catch (error) {
         console.error(error);
@@ -43,92 +50,77 @@ export default function MyAppointments() {
   }, []);
 
   const renderAppointment = ({item}) => (
-    <View style={styles.row}>
-      <Text style={styles.cell}>{item.date || item.service?.date}</Text>
-      <Text style={styles.cell}>{item.time || item.service?.time}</Text>
-      <Text style={styles.cell}>{item.service?.name || 'No Service Name'}</Text>
-      <Text style={styles.cell}>{item.status || item.service?.status}</Text>
-    </View>
+    <AppointmentComp
+      service={item.service || {}}
+      date={item.date}
+      time={item.time}
+      status={item.status}
+    />
   );
 
   return (
-    <View style={styles.cont}>
-      <Text style={styles.header}>My Appointments</Text>
+    <View style={styles.container}>
+      <View style={styles.headerView}>
+        <TouchableOpacity onPress={() => navigation.goBack()}>
+          <Image source={require('../assets/images/Back.png')} />
+        </TouchableOpacity>
+        <View style={styles.headerTitle}>
+          <Text style={styles.header}>My Appointments</Text>
+        </View>
+      </View>
       {loading ? (
         <ActivityIndicator size="large" color={Colors.black} />
+      ) : appointments.length === 0 ? (
+        <Text style={styles.noAppointmentsText}>No appointments found.</Text>
       ) : (
-        <View style={styles.table}>
-          <View style={styles.headerRow}>
-            <Text style={styles.headerCell}>Date</Text>
-            <Text style={styles.headerCell}>Time</Text>
-            <Text style={styles.headerCell}>Service</Text>
-            <Text style={styles.headerCell}>Status</Text>
-          </View>
-          <FlatList
-            data={appointments}
-            keyExtractor={item =>
-              item.id
-                ? item.id.toString()
-                : item._id
-                ? item._id.toString()
-                : Math.random().toString()
-            }
-            renderItem={renderAppointment}
-          />
-        </View>
+        <ScrollView>
+          {appointments.map((appointment, index) => (
+            <View key={index.toString()}>
+              {renderAppointment({item: appointment})}
+              <View style={styles.separator} />
+            </View>
+          ))}
+        </ScrollView>
       )}
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  cont: {
-    backgroundColor: Colors.white,
+  container: {
     flex: 1,
-    padding: 10,
+    backgroundColor: Colors.white,
+    padding: 15,
+  },
+  headerView: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  backText: {
+    fontFamily: Fonts.bold,
+    color: Colors.black,
+  },
+  headerTitle: {
+    flex: 1,
+    alignItems: 'center',
   },
   header: {
-    fontSize: 24,
+    fontSize: 32,
     fontFamily: Fonts.bold,
     color: Colors.black,
     textAlign: 'center',
-    marginBottom: 20,
     marginVertical: 20,
   },
-  table: {
-    borderWidth: 1,
-    borderColor: Colors.blueDark,
-    borderRadius: 10,
-    overflow: 'hidden',
+  noAppointmentsText: {
+    fontFamily: Fonts.regular,
+    fontSize: 18,
+    color: Colors.gray,
+    textAlign: 'center',
+    marginTop: 20,
   },
-  headerRow: {
-    flexDirection: 'row',
-    borderBottomWidth: 2,
-    borderBottomColor: Colors.blueDark,
+  separator: {
+    height: 1,
     backgroundColor: Colors.lightGray,
-  },
-  headerCell: {
-    flex: 1,
-    fontSize: 16,
-    fontWeight: 'bold',
-    textAlign: 'center',
-    paddingVertical: 10,
-    borderRightWidth: 1,
-    borderRightColor: Colors.blueDark,
-    color: Colors.black,
-  },
-  row: {
-    flexDirection: 'row',
-    borderBottomWidth: 1,
-    borderBottomColor: Colors.blueDark,
-  },
-  cell: {
-    flex: 1,
-    fontSize: 16,
-    textAlign: 'center',
-    paddingVertical: 10,
-    borderRightWidth: 1,
-    borderRightColor: Colors.blueDark,
-    color: Colors.black,
+    marginVertical: 10,
   },
 });

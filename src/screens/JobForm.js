@@ -1,5 +1,5 @@
 import {View, Text, StyleSheet, Alert, ActivityIndicator} from 'react-native';
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import axios from 'axios';
 import {Colors} from '../assets/colors/Colors';
 import {Fonts} from '../assets/fonts/Fonts';
@@ -8,6 +8,7 @@ import CartButton from '../components/CartButton';
 import AppButton from '../components/AppButton';
 import JobComp from '../components/JobComp';
 import {useNavigation} from '@react-navigation/native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function JobForm() {
   const [firstName, setFirstName] = useState('');
@@ -16,9 +17,23 @@ export default function JobForm() {
   const [message, setMessage] = useState('');
   const [selectedJobTitle, setSelectedJobTitle] = useState('');
   const [loading, setLoading] = useState(false);
+  const [token, setToken] = useState('');
   const navigation = useNavigation();
-  const token =
-    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NjY3ZTlmNTBhODlkZWNmNzVjZTUxZGUiLCJ0eXBlIjoiYWRtaW4iLCJpYXQiOjE3MTkyMTMyODh9.9vC2u8nJB2YCbgTj6TdOdBVogoIdC2exAhbGw-9MbLA';
+
+  useEffect(() => {
+    const getToken = async () => {
+      try {
+        const storedToken = await AsyncStorage.getItem('userToken');
+        if (storedToken) {
+          setToken(storedToken);
+        }
+      } catch (error) {
+        console.error('Failed to retrieve token from AsyncStorage', error);
+      }
+    };
+
+    getToken();
+  }, []);
 
   const handleJobTitleSelect = title => {
     setSelectedJobTitle(title);
@@ -118,12 +133,13 @@ export default function JobForm() {
           />
         ))}
       </View>
-      <AppButton title="SUBMIT" onPress={handleSubmit} />
-      {loading && (
-        <View style={styles.loader}>
+      <View style={styles.btnView}>
+        {loading ? (
           <ActivityIndicator size="large" color={Colors.primary} />
-        </View>
-      )}
+        ) : (
+          <AppButton title="SUBMIT" onPress={handleSubmit} />
+        )}
+      </View>
     </View>
   );
 }
@@ -136,7 +152,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   text: {
-    fontFamily: Fonts.bold,
+    fontFamily: Fonts.osBold,
     fontSize: 30,
     color: Colors.blackDark,
   },
@@ -145,11 +161,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-evenly',
   },
-  loader: {
-    ...StyleSheet.absoluteFillObject,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-    justifyContent: 'center',
-    alignItems: 'center',
-    zIndex: 10,
+  btnView: {
+    width: '100%',
+    marginTop: 20,
   },
 });

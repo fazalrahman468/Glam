@@ -72,7 +72,10 @@ export default function CourseTutorial() {
   return (
     <View style={styles.cont}>
       <Text style={styles.text}>Course Tutorials</Text>
-      <AppInput placeholder="Search" />
+      <AppInput
+        image={require('../assets/images/Sea.png')}
+        placeholder="Search"
+      />
       <FlatList
         data={data}
         renderItem={renderItem}
@@ -92,7 +95,7 @@ const styles = StyleSheet.create({
     padding: 20,
   },
   text: {
-    fontFamily: Fonts.bold,
+    fontFamily: Fonts.osBold,
     fontSize: 32,
     color: Colors.blackDark,
   },

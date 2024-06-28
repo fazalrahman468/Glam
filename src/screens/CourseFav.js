@@ -7,11 +7,14 @@ export default function CourseFav() {
   return (
     <View style={styles.cont}>
       <Text style={styles.text}>Favorite Videos</Text>
-      <View style={styles.img}>
-        <View style={styles.imgView}>
-          <Image source={require('../assets/images/Black.png')} />
+      <View style={styles.cont2}>
+        <View style={styles.img}>
+          <View style={styles.imgView}>
+            <Image source={require('../assets/images/Black.png')} />
+          </View>
+          <Text style={styles.videoText}>Video Tutorials</Text>
         </View>
-        <Text style={styles.videoText}>Video Tutorials</Text>
+        <Image source={require('../assets/images/Cross.png')} />
       </View>
     </View>
   );
@@ -24,9 +27,14 @@ const styles = StyleSheet.create({
     padding: 20,
   },
   text: {
-    fontFamily: Fonts.bold,
+    fontFamily: Fonts.osBold,
     fontSize: 32,
     color: Colors.blackDark,
+  },
+  cont2: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginTop: 20,
   },
   img: {
     width: 164,
@@ -35,7 +43,6 @@ const styles = StyleSheet.create({
     padding: 10,
     backgroundColor: Colors.gray1,
     borderRadius: 10,
-    marginTop: 20,
   },
   imgView: {
     alignItems: 'flex-end',

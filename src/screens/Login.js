@@ -60,6 +60,7 @@ export default function Login() {
       });
 
       const {token} = response.data;
+      // console.log(token, 'token');
 
       await AsyncStorage.setItem('userToken', token);
 

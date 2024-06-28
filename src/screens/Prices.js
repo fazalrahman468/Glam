@@ -41,13 +41,13 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   text: {
-    fontFamily: Fonts.bold,
+    fontFamily: Fonts.osBold,
     fontSize: 32,
     color: Colors.blackDark,
   },
   price: {
-    fontFamily: Fonts.bold,
-    fontSize: 24,
+    fontFamily: Fonts.osSemiBold,
+    fontSize: 25,
     color: Colors.blackDark,
     marginTop: 10,
   },

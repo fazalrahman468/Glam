@@ -88,7 +88,7 @@ const styles = StyleSheet.create({
     marginTop: -30,
   },
   qtyText: {
-    fontFamily: Fonts.bold,
+    fontFamily: Fonts.osBold,
     fontSize: 30,
     color: Colors.balckLight,
   },
@@ -102,20 +102,22 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     fontSize: 30,
-    color: Colors.blackDark,
+    fontFamily: Fonts.osBold,
+    color: Colors.balckLight,
     marginHorizontal: 20,
   },
   quantityText: {
     fontSize: 30,
-    color: Colors.blackDark,
+    fontFamily: Fonts.osBold,
+    color: Colors.balckLight,
   },
   about: {
-    fontFamily: Fonts.semiBold,
+    fontFamily: Fonts.osSemiBold,
     fontSize: 25,
     color: Colors.black1,
   },
   det: {
-    fontFamily: Fonts.semiBold,
+    fontFamily: Fonts.osSemiBold,
     fontSize: 20,
     color: Colors.black1,
     lineHeight: 30,
@@ -124,7 +126,7 @@ const styles = StyleSheet.create({
   btnView: {
     position: 'absolute',
     bottom: 10,
-    width: '95%',
-    marginHorizontal: 10,
+    width: '90%',
+    alignSelf: 'center',
   },
 });

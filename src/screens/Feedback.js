@@ -1,31 +1,37 @@
-import {
-  View,
-  Text,
-  StyleSheet,
-  Image,
-  Alert,
-  ActivityIndicator,
-} from 'react-native';
-import React, {useState} from 'react';
+import {View, Text, StyleSheet, Alert, ActivityIndicator} from 'react-native';
+import React, {useState, useEffect} from 'react';
 import {Colors} from '../assets/colors/Colors';
 import {Fonts} from '../assets/fonts/Fonts';
 import AppInput from '../components/AppInput';
 import AppButton from '../components/AppButton';
 import axios from 'axios';
 import {useNavigation} from '@react-navigation/native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function Feedback() {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [msg, setMsg] = useState('');
   const [loading, setLoading] = useState(false);
+  const [token, setToken] = useState('');
   const navigation = useNavigation();
 
-  const token =
-    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NjYwMDEwOGJmODYwZGNhOWNhYzRlNDYiLCJ0eXBlIjoiY3VzdG9tZXIiLCJpYXQiOjE3MTkzODQyMjV9.PR98bYKOChlTiuWE4Z9XRSohDlOKs5qlSnyY3f9aqT8';
+  useEffect(() => {
+    const getToken = async () => {
+      try {
+        const storedToken = await AsyncStorage.getItem('userToken');
+        if (storedToken) {
+          setToken(storedToken);
+        }
+      } catch (error) {
+        console.error('Failed to retrieve token from AsyncStorage', error);
+      }
+    };
+
+    getToken();
+  }, []);
 
   const handleSubmit = async () => {
-    // Email validation regex
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
     if (!name || !email || !msg) {
@@ -97,13 +103,12 @@ export default function Feedback() {
       />
 
       <View style={styles.btnView}>
-        <AppButton title="Submit" onPress={handleSubmit} />
-      </View>
-      {loading && (
-        <View style={styles.loader}>
+        {loading ? (
           <ActivityIndicator size="large" color={Colors.primary} />
-        </View>
-      )}
+        ) : (
+          <AppButton title="Submit" onPress={handleSubmit} />
+        )}
+      </View>
     </View>
   );
 }
@@ -121,25 +126,8 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginVertical: 10,
   },
-  ratingView: {
-    flexDirection: 'row',
-    marginTop: 10,
-  },
-  ratingText: {
-    fontFamily: Fonts.semiBold,
-    fontSize: 20,
-    color: Colors.black,
-    marginLeft: 12,
-  },
   btnView: {
     width: '100%',
     marginTop: 20,
-  },
-  loader: {
-    ...StyleSheet.absoluteFillObject,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-    justifyContent: 'center',
-    alignItems: 'center',
-    zIndex: 10,
   },
 });

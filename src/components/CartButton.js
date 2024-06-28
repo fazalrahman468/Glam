@@ -23,7 +23,7 @@ const styles = StyleSheet.create({
   },
   text: {
     color: Colors.white,
-    fontFamily: Fonts.semiBold,
-    fontSize: 25,
+    fontFamily: Fonts.osBold,
+    fontSize: 27,
   },
 });

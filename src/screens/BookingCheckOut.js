@@ -146,13 +146,13 @@ const styles = StyleSheet.create({
     borderColor: Colors.grayBorder,
   },
   text: {
-    fontFamily: Fonts.bold,
+    fontFamily: Fonts.osBold,
     fontSize: 32,
-    color: Colors.black,
+    color: Colors.blackDark,
     textAlign: 'center',
   },
   serText: {
-    fontFamily: Fonts.bold,
+    fontFamily: Fonts.osBold,
     fontSize: 30,
     color: Colors.blackDark,
     marginTop: 30,

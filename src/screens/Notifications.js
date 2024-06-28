@@ -5,6 +5,8 @@ import {
   Image,
   TouchableOpacity,
   FlatList,
+  Alert,
+  ActivityIndicator,
 } from 'react-native';
 import React, {useEffect, useState} from 'react';
 import {Colors} from '../assets/colors/Colors';
@@ -12,29 +14,36 @@ import NotificationComp from '../components/NotificationComp';
 import {Fonts} from '../assets/fonts/Fonts';
 import {useNavigation} from '@react-navigation/native';
 import axios from 'axios';
-import Swipeable from 'react-native-swipeable';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function Notifications() {
   const navigation = useNavigation();
   const [notifications, setNotifications] = useState([]);
-  const token =
-    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NjYwMDEwOGJmODYwZGNhOWNhYzRlNDYiLCJ0eXBlIjoiY3VzdG9tZXIiLCJpYXQiOjE3MTkzMTgwOTV9.KgwfDs3vCjIbCF2olBxB4qKRqQEY61FQwZmNVAGiLIE';
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchNotifications = async () => {
       try {
+        const token = await AsyncStorage.getItem('userToken');
+        if (!token) {
+          Alert.alert('Error', 'No token found');
+          return;
+        }
+
         const response = await axios.get(
           'https://glamparlor.onrender.com/api/notifications/all',
           {
             headers: {
               'Content-Type': 'application/json',
-              'x-auth-token': `${token}`,
+              'x-auth-token': token,
             },
           },
         );
         setNotifications(response.data.notifications);
       } catch (error) {
         console.error('Error fetching notifications:', error);
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -43,12 +52,18 @@ export default function Notifications() {
 
   const handleDelete = async id => {
     try {
+      const token = await AsyncStorage.getItem('userToken');
+      if (!token) {
+        Alert.alert('Error', 'No token found');
+        return;
+      }
+
       await axios.delete(
         `https://glamparlor.onrender.com/api/notifications/${id}`,
         {
           headers: {
             'Content-Type': 'application/json',
-            'x-auth-token': `${token}`,
+            'x-auth-token': token,
           },
         },
       );
@@ -89,11 +104,15 @@ export default function Notifications() {
           <Text style={styles.text}>Notifications</Text>
         </View>
       </View>
-      <FlatList
-        data={notifications}
-        renderItem={renderItem}
-        keyExtractor={item => item._id.toString()}
-      />
+      {loading ? (
+        <ActivityIndicator size="large" color={Colors.primary} />
+      ) : (
+        <FlatList
+          data={notifications}
+          renderItem={renderItem}
+          keyExtractor={item => item._id.toString()}
+        />
+      )}
     </View>
   );
 }

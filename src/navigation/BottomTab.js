@@ -12,8 +12,8 @@ export default function BottomTab() {
     <Tab.Navigator
       screenOptions={({route}) => ({
         headerShown: false,
-        tabBarActiveTintColor: '#0021F5', // Blue color for active tab
-        tabBarInactiveTintColor: '#424240', // Black color for inactive tab
+        tabBarActiveTintColor: '#0021F5',
+        tabBarInactiveTintColor: '#424240',
         tabBarIcon: ({focused, color}) => {
           let iconName;
           if (route.name === 'Shopping') {
@@ -24,14 +24,9 @@ export default function BottomTab() {
             iconName = require('../assets/images/Shop.png');
           }
 
-          return (
-            <Image
-              source={iconName}
-              style={{tintColor: color}} // Use the color prop to change the icon color
-            />
-          );
+          return <Image source={iconName} style={{tintColor: color}} />;
         },
-        tabBarLabel: () => null, // Hide the label
+        tabBarLabel: () => null,
       })}>
       <Tab.Screen name="Shopping" component={Shopping} />
       <Tab.Screen name="Search" component={Search} />

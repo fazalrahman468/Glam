@@ -31,7 +31,7 @@ const styles = StyleSheet.create({
     padding: 10,
   },
   title: {
-    fontFamily: Fonts.semiBold,
+    fontFamily: Fonts.osSemiBold,
     fontSize: 25,
     color: Colors.black,
   },
@@ -39,7 +39,7 @@ const styles = StyleSheet.create({
     paddingLeft: 15,
   },
   subTitle: {
-    fontFamily: Fonts.semiBold,
+    fontFamily: Fonts.osSemiBold,
     fontSize: 25,
     color: Colors.gray2,
   },

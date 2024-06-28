@@ -7,7 +7,10 @@ import AppInput from '../components/AppInput';
 export default function CourseTutorial() {
   return (
     <View style={styles.cont}>
-      <AppInput placeholder="Search" />
+      <AppInput
+        image={require('../assets/images/Sea.png')}
+        placeholder="Search"
+      />
       <View style={styles.imgView}>
         <View style={styles.img}>
           <Text style={styles.videoText}>Video Tutorials</Text>

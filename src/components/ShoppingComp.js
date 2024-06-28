@@ -35,9 +35,10 @@ const styles = StyleSheet.create({
     width: 50,
     height: 50,
     resizeMode: 'cover',
+    borderRadius: 10,
   },
   text: {
-    fontFamily: Fonts.bold,
+    fontFamily: Fonts.osBold,
     fontSize: 15,
     color: Colors.grayLight,
     marginTop: 10,

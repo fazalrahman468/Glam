@@ -8,4 +8,10 @@ export const Fonts = {
   bold: 'Inter-Bold',
   extraBold: 'Inter-ExtraBold',
   black: 'Inter-Black',
+  osLight: 'OpenSans-Light',
+  osRegular: 'OpenSans-Regular',
+  osMedium: 'OpenSans-Medium',
+  osSemiBold: 'OpenSans-SemiBold',
+  osBold: 'OpenSans-Bold',
+  osExtraBold: 'OpenSans-ExtraBold',
 };

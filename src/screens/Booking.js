@@ -56,9 +56,12 @@ export default function Booking() {
           <Text style={styles.glamText}>Glam Guide</Text>
           <View style={styles.locView}>
             <Image source={require('../assets/images/Location.png')} />
-            <Text style={styles.locText}>
-              123 Main Boulevard, DHA Phase 5, Lahore 54000, Pakistan
-            </Text>
+            <View>
+              <Text style={styles.locText}>
+                123 Main Boulevard, DHA Phase 5,
+              </Text>
+              <Text style={styles.locText}>Lahore 54000, Pakistan</Text>
+            </View>
           </View>
           <View style={styles.timeView}>
             <Image source={require('../assets/images/Clock.png')} />
@@ -104,7 +107,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   glamText: {
-    fontFamily: Fonts.bold,
+    fontFamily: Fonts.osBold,
     fontSize: 32,
     color: Colors.white,
     marginLeft: 20,
@@ -113,10 +116,9 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
   },
   locText: {
-    fontFamily: Fonts.bold,
+    fontFamily: Fonts.osBold,
     fontSize: 18,
     color: Colors.white,
-    textAlign: 'auto',
   },
   timeView: {
     flexDirection: 'row',
@@ -128,7 +130,7 @@ const styles = StyleSheet.create({
     padding: 20,
   },
   serText: {
-    fontFamily: Fonts.bold,
+    fontFamily: Fonts.osBold,
     fontSize: 32,
     color: Colors.blackDark,
   },

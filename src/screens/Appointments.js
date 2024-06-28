@@ -95,7 +95,7 @@ export default function Appointments() {
         </View>
       </View>
       <View style={styles.btnView}>
-        <CartButton title="Book Now" onPress={handleBooking} />
+        <CartButton title="Book Appointment" onPress={handleBooking} />
       </View>
     </View>
   );
@@ -110,8 +110,8 @@ const styles = StyleSheet.create({
     padding: 20,
   },
   text: {
-    fontFamily: Fonts.bold,
-    fontSize: 18,
+    fontFamily: Fonts.osBold,
+    fontSize: 20,
     color: Colors.blackDark,
   },
   timeView: {
@@ -122,5 +122,8 @@ const styles = StyleSheet.create({
   },
   btnView: {
     padding: 20,
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 });
