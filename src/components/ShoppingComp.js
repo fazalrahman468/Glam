@@ -15,12 +15,8 @@ export default function ShoppingComp({image, title, onPress, selected}) {
     <TouchableOpacity
       style={[styles.container, selected && styles.selectedContainer]}
       onPress={onPress}>
-      <ImageBackground
-        source={require('../assets/images/Rectangle14.png')}
-        style={styles.imageBackground}>
-        <Image source={{uri: image}} style={styles.image} />
-      </ImageBackground>
-      <Text style={[styles.text, selected && styles.selectedText]}>
+      <Image source={{uri: image}} style={styles.image} />
+      <Text numberOfLines={1} style={[styles.text, selected && styles.selectedText]}>
         {title}
       </Text>
     </TouchableOpacity>
@@ -29,22 +25,16 @@ export default function ShoppingComp({image, title, onPress, selected}) {
 
 const styles = StyleSheet.create({
   container: {
-    // marginTop: 30,
-    alignItems: 'center',
+    backgroundColor: Colors.gray1,
+    padding: 12,
+    borderRadius: 10,
     marginRight: 10,
-    height: 120,
+    alignItems: 'center',
+    justifyContent:'center',
+    height: 110,
   },
   selectedContainer: {
     backgroundColor: Colors.blueDark,
-    borderRadius: 10,
-    padding: 8,
-    height: 120,
-  },
-  imageBackground: {
-    width: 75,
-    height: 75,
-    alignItems: 'center',
-    justifyContent: 'center',
   },
   image: {
     width: 50,
@@ -57,6 +47,7 @@ const styles = StyleSheet.create({
     fontSize: 15,
     color: Colors.grayLight,
     marginTop: 10,
+    width:65,
   },
   selectedText: {
     color: Colors.white,

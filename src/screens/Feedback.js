@@ -7,6 +7,7 @@ import AppButton from '../components/AppButton';
 import axios from 'axios';
 import {useNavigation} from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { APIBASEURL } from '../utils/constants';
 
 export default function Feedback() {
   const [name, setName] = useState('');
@@ -48,7 +49,7 @@ export default function Feedback() {
 
     try {
       const response = await axios.post(
-        'https://glamparlor.onrender.com/api/feedback/create',
+        `${APIBASEURL}/api/feedback/create`,
         {
           name,
           email,
@@ -103,11 +104,7 @@ export default function Feedback() {
       />
 
       <View style={styles.btnView}>
-        {loading ? (
-          <ActivityIndicator size="large" color={Colors.primary} />
-        ) : (
-          <AppButton title="Submit" onPress={handleSubmit} />
-        )}
+        <AppButton loading={loading} title="Submit" onPress={handleSubmit} />
       </View>
     </View>
   );

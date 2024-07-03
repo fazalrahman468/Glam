@@ -14,40 +14,42 @@ import axios from 'axios';
 import {Fonts} from '../assets/fonts/Fonts';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import AppointmentComp from '../components/AppointmentComp';
-import {useNavigation} from '@react-navigation/native';
+import {useFocusEffect, useNavigation} from '@react-navigation/native';
+import { APIBASEURL } from '../utils/constants';
 
-const API_URL = 'https://glamparlor.onrender.com';
 
 export default function MyAppointments() {
   const [appointments, setAppointments] = useState([]);
   const [loading, setLoading] = useState(true);
   const navigation = useNavigation();
-
-  useEffect(() => {
-    const fetchAppointments = async () => {
-      try {
-        const token = await AsyncStorage.getItem('userToken');
-        if (!token) {
-          setLoading(false);
-          return;
-        }
-        const response = await axios.get(`${API_URL}/api/appointment/all`, {
-          headers: {
-            'Content-Type': 'application/json',
-            'x-auth-token': token,
-          },
-        });
-        setAppointments(response.data.orders);
-      } catch (error) {
-        console.error(error);
-        Alert.alert('Error', 'There was an error fetching the appointments');
-      } finally {
+  
+  const fetchAppointments = async () => {
+    try {
+      const token = await AsyncStorage.getItem('userToken');
+      if (!token) {
         setLoading(false);
+        return;
       }
-    };
+      const response = await axios.get(`${APIBASEURL}/api/appointment/all`, {
+        headers: {
+          'Content-Type': 'application/json',
+          'x-auth-token': token,
+        },
+      });
+      setAppointments(response.data.appointments);
+    } catch (error) {
+      console.error(error);
+      Alert.alert('Error', 'There was an error fetching the appointments');
+    } finally {
+      setLoading(false);
+    }
+  };
 
-    fetchAppointments();
-  }, []);
+  useFocusEffect(
+    React.useCallback(() => {
+      fetchAppointments();
+    }, [])
+  );
 
   const renderAppointment = ({item}) => (
     <AppointmentComp
@@ -121,6 +123,6 @@ const styles = StyleSheet.create({
   separator: {
     height: 1,
     backgroundColor: Colors.lightGray,
-    marginVertical: 10,
+    marginVertical: 3,
   },
 });

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import {createDrawerNavigator} from '@react-navigation/drawer';
 import {
   Text,
@@ -10,29 +10,39 @@ import {
 } from 'react-native';
 import PasswordSaved from '../screens/PasswordSaved';
 import Notifications from '../screens/Notifications';
-import BottomTab from './BottomTab';
-import LogOut from '../screens/LogOut';
 import {Colors} from '../assets/colors/Colors';
 import {Fonts} from '../assets/fonts/Fonts';
 import Home from '../screens/Home';
 import MyAppointments from '../screens/MyAppointments';
 import MyOrders from '../screens/MyOrders';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useFocusEffect } from '@react-navigation/native';
 
 const Drawer = createDrawerNavigator();
 
 function CustomDrawerContent({navigation}) {
+  const [name, setName] = useState("");
+  const [image, setImage] = useState(null);
+
+  const getUserData=async()=>{
+   const username= await AsyncStorage.getItem('name');
+   const image= await AsyncStorage.getItem('image');
+   console.log(image)
+   setName(username)
+   setImage(image)
+  }
+
+  useFocusEffect(
+    React.useCallback(() => {
+      getUserData();
+    }, [])
+  );
+
   return (
     <View style={styles.cont}>
-      <View style={styles.header}>
-        <Image source={require('../assets/images/Prof.png')} />
-        <Text style={styles.headerText}>Jabbar Ahmad</Text>
-        <Text style={styles.email}>acde@gmail.com</Text>
-      </View>
-      <TouchableOpacity
-        onPress={() => navigation.navigate('PasswordSaved')}
-        style={styles.icon}>
-        <Image source={require('../assets/images/Password.png')} />
-        <Text style={styles.mail}>Password saved</Text>
+      <TouchableOpacity  style={styles.header} onPress={() => navigation.navigate('Profile')}>
+        <Image source={image?{uri:image}:require('../assets/images/user.png')} style={{width:40,height:40,borderRadius:20}}/>
+        <Text style={styles.headerText}>{name}</Text>
       </TouchableOpacity>
 
       <TouchableOpacity
@@ -57,7 +67,10 @@ function CustomDrawerContent({navigation}) {
       </TouchableOpacity>
 
       <TouchableOpacity
-        onPress={() => navigation.navigate('LogOut')}
+        onPress={async() => {
+          await AsyncStorage.clear()
+          navigation.navigate('Login')
+        }}
         style={[styles.icon, {marginTop: 40}]}>
         <Image source={require('../assets/images/Logout.png')} />
         <Text style={styles.logoutText}>Logout</Text>
@@ -75,7 +88,6 @@ export default function DrawerNav() {
       <Drawer.Screen name="Notifications" component={Notifications} />
       <Drawer.Screen name="MyAppointments" component={MyAppointments} />
       <Drawer.Screen name="MyOrders" component={MyOrders} />
-      <Drawer.Screen name="LogOut" component={LogOut} />
     </Drawer.Navigator>
   );
 }
@@ -85,13 +97,14 @@ const styles = StyleSheet.create({
     padding: 20,
   },
   header: {
-    height: '40%',
+    flexDirection:'row',
+    alignItems:'center'
   },
   headerText: {
     color: Colors.black,
     fontFamily: Fonts.osSemiBold,
-    fontSize: 24,
-    marginTop: 16,
+    fontSize: 20,
+    marginLeft:5
   },
   logoutText: {
     color: Colors.black,

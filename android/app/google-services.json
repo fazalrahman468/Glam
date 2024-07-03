@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "485677795086",
+    "project_id": "sushbuddies-80b77",
+    "storage_bucket": "sushbuddies-80b77.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:485677795086:android:4fba270ce66fa66563395f",
+        "android_client_info": {
+          "package_name": "com.glam"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "485677795086-nstchlkuhljgu3t3tno5hlv9imp9etir.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCC9hWn8zcmXQWhhvXtLLrM8uktjG7dQw0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "485677795086-nstchlkuhljgu3t3tno5hlv9imp9etir.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "485677795086-d4oef59erjfhtis7blf1a6bekasq2u9u.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.sesh.buddies"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

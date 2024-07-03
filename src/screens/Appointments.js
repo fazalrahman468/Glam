@@ -1,4 +1,4 @@
-import {View, Text, StyleSheet, TouchableOpacity} from 'react-native';
+import {View, Text, StyleSheet, TouchableOpacity, Alert} from 'react-native';
 import React, {useState} from 'react';
 import {Colors} from '../assets/colors/Colors';
 import {Calendar} from 'react-native-calendars';
@@ -34,7 +34,7 @@ export default function Appointments() {
         selectedService,
       });
     } else {
-      alert('Please select a date and time.');
+      Alert.alert('Please select a date and time.');
     }
   };
 

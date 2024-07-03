@@ -37,14 +37,14 @@ export default function Description() {
         <TouchableOpacity
           style={styles.arrowView}
           onPress={() => navigation.goBack()}>
-          <Image source={require('../assets/images/Arrow.png')} />
+          <Image style={{width:15,height:20}} source={require('../assets/images/Arrow.png')} />
         </TouchableOpacity>
       </ImageBackground>
 
       <View style={styles.container}>
-        <View style={styles.qtyView}>
+        {/* <View style={styles.qtyView}>
           <Star />
-        </View>
+        </View> */}
         <View style={styles.cont1}>
           <Text style={styles.qtyText}>Quantity</Text>
           <View style={styles.descButtons}>

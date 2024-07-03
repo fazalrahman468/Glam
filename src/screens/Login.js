@@ -7,6 +7,7 @@ import {
   ScrollView,
   Alert,
   ActivityIndicator,
+  ToastAndroid,
 } from 'react-native';
 import React, {useState} from 'react';
 import axios from 'axios';
@@ -20,8 +21,8 @@ import AppButton from '../components/AppButton';
 import LoginComp from '../components/LoginComp';
 import PasswordInput from '../components/PasswordInput';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { APIBASEURL } from '../utils/constants';
 
-const API_URL = 'https://glamparlor.onrender.com';
 
 export default function Login() {
   const navigation = useNavigation();
@@ -53,26 +54,22 @@ export default function Login() {
     setLoading(true);
 
     try {
-      const response = await axios.post(`${API_URL}/api/auth`, {
+      const response = await axios.post(`${APIBASEURL}/api/auth`, {
         email: email.trim().toLocaleLowerCase(),
         password,
-        fcm_token: '',
       });
 
-      const {token} = response.data;
-      // console.log(token, 'token');
+      const {token,user} = response.data;
 
       await AsyncStorage.setItem('userToken', token);
+      await AsyncStorage.setItem('image', user?.profilePicture||"");
+      await AsyncStorage.setItem('name', user.name);
+      await AsyncStorage.setItem('email', user.email);
+      await AsyncStorage.setItem('phone', user.phone);
 
       navigation.navigate('Home');
     } catch (error) {
-      const errorMessage =
-        error.response && error.response.data
-          ? typeof error.response.data === 'string'
-            ? error.response.data
-            : JSON.stringify(error.response.data)
-          : 'Network Error';
-      Alert.alert('Error', errorMessage);
+      ToastAndroid.show(error.response.data.message,ToastAndroid.BOTTOM);
     } finally {
       setLoading(false);
     }
@@ -115,11 +112,7 @@ export default function Login() {
           </TouchableOpacity>
         </View>
         <View style={styles.btnView}>
-          {loading ? (
-            <ActivityIndicator size="large" color={Colors.primary} />
-          ) : (
-            <AppButton title="LOG IN" onPress={loginUser} />
-          )}
+          <AppButton loading={loading} title="LOG IN" onPress={loginUser} />
         </View>
         <Text style={styles.accText}>
           Don't have an account yet?{' '}

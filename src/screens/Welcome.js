@@ -4,13 +4,22 @@ import {Colors} from '../assets/colors/Colors';
 import Glam from '../assets/images/Glam.svg';
 import {Fonts} from '../assets/fonts/Fonts';
 import {useNavigation} from '@react-navigation/native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function Welcome() {
   const navigation = useNavigation();
+  const fetchToken=async()=>{
+    const token = await AsyncStorage.getItem('userToken');
+    if (token) {
+      navigation.navigate('Home');
+    }else{
+      navigation.navigate('OnBoard');
+    }
+  }
 
   useEffect(() => {
     const timer = setTimeout(() => {
-      navigation.navigate('OnBoard');
+      fetchToken()
     }, 2000);
 
     return () => clearTimeout(timer);

@@ -15,6 +15,7 @@ import AppInput from '../components/AppInput';
 import ShoppingComp from '../components/ShoppingComp';
 import {useNavigation} from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { APIBASEURL } from '../utils/constants';
 
 export default function Shopping({selected}) {
   const [products, setProducts] = useState([]);
@@ -43,7 +44,7 @@ export default function Shopping({selected}) {
   const fetchProducts = async token => {
     try {
       const response = await axios.get(
-        'https://glamparlor.onrender.com/api/product/all',
+        `${APIBASEURL}/api/product/all`,
         {
           headers: {
             'Content-Type': 'application/json',
@@ -62,7 +63,7 @@ export default function Shopping({selected}) {
   const fetchCategories = async token => {
     try {
       const response = await axios.get(
-        'https://glamparlor.onrender.com/api/cat/all/1',
+        `${APIBASEURL}/api/cat/all/1`,
         {
           headers: {
             'Content-Type': 'application/json',
@@ -81,7 +82,7 @@ export default function Shopping({selected}) {
   const fetchProductsByCategory = async categoryId => {
     try {
       const response = await axios.get(
-        `https://glamparlor.onrender.com/api/product/${categoryId}`,
+        `${APIBASEURL}/api/product/${categoryId}`,
         {
           headers: {
             'Content-Type': 'application/json',
@@ -111,18 +112,14 @@ export default function Shopping({selected}) {
       style={styles.itemContainer}
       onPress={() => navigation.navigate('Description', {item})}>
       <Image source={{uri: item.image}} style={styles.image} />
-      <Text style={styles.itemTitle}>{item.name}</Text>
-      <Text style={styles.itemPrice}>${item.price}</Text>
+      <Text numberOfLines={1} style={styles.itemTitle}>{item.name}</Text>
+      <Text style={styles.itemPrice}>$<Text style={{fontWeight:'800'}}>{item.price}</Text></Text>
     </TouchableOpacity>
   );
 
   return (
     <View style={styles.cont}>
       <Text style={styles.text}>Catalog</Text>
-      <AppInput
-        placeholder="Search"
-        image={require('../assets/images/Sea.png')}
-      />
       <ScrollView
         horizontal
         showsHorizontalScrollIndicator={false}
@@ -152,10 +149,10 @@ export default function Shopping({selected}) {
       <FlatList
         data={products}
         renderItem={renderItem}
+        showsVerticalScrollIndicator={false}
         keyExtractor={item => item._id.toString()}
         numColumns={2}
         columnWrapperStyle={styles.columnWrapper}
-        contentContainerStyle={{marginTop: 25}}
       />
     </View>
   );
@@ -173,8 +170,8 @@ const styles = StyleSheet.create({
     color: Colors.blackDark,
   },
   scroll: {
-    height: 120,
     marginTop: 30,
+    height:170
   },
   columnWrapper: {
     justifyContent: 'space-between',
@@ -187,21 +184,21 @@ const styles = StyleSheet.create({
     marginVertical: 10,
   },
   image: {
-    width: 120,
+    width: 140,
     height: 100,
     resizeMode: 'cover',
     borderRadius: 10,
-    alignSelf: 'flex-end',
+    alignSelf:'center'
   },
   itemTitle: {
     fontFamily: Fonts.osSemiBold,
-    fontSize: 20,
+    fontSize: 18,
     color: Colors.blackDark,
     marginTop: 10,
   },
   itemPrice: {
-    fontFamily: Fonts.osSemiBold,
-    fontSize: 20,
+    fontFamily: Fonts.medium,
+    fontSize: 16,
     color: Colors.blackDark,
     marginTop: 5,
   },
@@ -211,7 +208,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     marginRight: 10,
     alignItems: 'center',
-    height: 120,
+    height: 110,
   },
   allCategoriesText: {
     fontFamily: Fonts.osBold,

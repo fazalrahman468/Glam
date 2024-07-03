@@ -14,36 +14,38 @@ import {Colors} from '../assets/colors/Colors';
 import {Fonts} from '../assets/fonts/Fonts';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import OrderComp from '../components/OrderComp';
-import {useNavigation} from '@react-navigation/native';
+import {useFocusEffect, useNavigation} from '@react-navigation/native';
+import { APIBASEURL } from '../utils/constants';
 
-const API_URL = 'https://glamparlor.onrender.com';
 
 export default function MyOrders() {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const navigation = useNavigation();
 
-  useEffect(() => {
-    const fetchOrders = async () => {
-      try {
-        const token = await AsyncStorage.getItem('userToken');
-        const response = await axios.get(`${API_URL}/api/order/all`, {
-          headers: {
-            'Content-Type': 'application/json',
-            'x-auth-token': token,
-          },
-        });
-        setOrders(response.data.orders);
-      } catch (error) {
-        console.error(error);
-        Alert.alert('Error', 'There was an error fetching the orders');
-      } finally {
-        setLoading(false);
-      }
-    };
+  const fetchOrders = async () => {
+    try {
+      const token = await AsyncStorage.getItem('userToken');
+      const response = await axios.get(`${APIBASEURL}/api/order/all`, {
+        headers: {
+          'Content-Type': 'application/json',
+          'x-auth-token': token,
+        },
+      });
+      setOrders(response.data.orders);
+    } catch (error) {
+      console.error(error);
+      Alert.alert('Error', 'There was an error fetching the orders');
+    } finally {
+      setLoading(false);
+    }
+  };
 
-    fetchOrders();
-  }, []);
+  useFocusEffect(
+    React.useCallback(() => {
+      fetchOrders();
+    }, [])
+  );
 
   const renderProduct = ({item, status}) => (
     <OrderComp
@@ -56,10 +58,10 @@ export default function MyOrders() {
     />
   );
 
-  const renderOrder = ({item}) => (
+  const renderOrder = ({item,index}) => (
     <View style={styles.orderContainer}>
       {/* <Text style={styles.statusText}>Status: {item.status}</Text> */}
-      <Text style={styles.statusText}>Order List</Text>
+      <Text style={styles.statusText}>Order {index+1}</Text>
       {item.cartData.map(cartItem => (
         <View key={cartItem._id}>
           {renderProduct({item: cartItem, status: item.status})}
@@ -83,10 +85,10 @@ export default function MyOrders() {
       ) : orders.length === 0 ? (
         <Text style={styles.noOrdersText}>No orders found.</Text>
       ) : (
-        <ScrollView>
+        <ScrollView showsVerticalScrollIndicator={false}>
           {orders.map((order, index) => (
             <View key={index.toString()}>
-              {renderOrder({item: order})}
+              {renderOrder({item: order,index})}
               <View style={styles.separator} />
             </View>
           ))}
@@ -138,6 +140,6 @@ const styles = StyleSheet.create({
   separator: {
     height: 1,
     backgroundColor: Colors.lightGray,
-    marginVertical: 10,
+    marginVertical: 3,
   },
 });

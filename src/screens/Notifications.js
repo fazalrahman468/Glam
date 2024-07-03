@@ -12,43 +12,45 @@ import React, {useEffect, useState} from 'react';
 import {Colors} from '../assets/colors/Colors';
 import NotificationComp from '../components/NotificationComp';
 import {Fonts} from '../assets/fonts/Fonts';
-import {useNavigation} from '@react-navigation/native';
+import {useFocusEffect, useNavigation} from '@react-navigation/native';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { APIBASEURL } from '../utils/constants';
 
 export default function Notifications() {
   const navigation = useNavigation();
   const [notifications, setNotifications] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    const fetchNotifications = async () => {
-      try {
-        const token = await AsyncStorage.getItem('userToken');
-        if (!token) {
-          Alert.alert('Error', 'No token found');
-          return;
-        }
-
-        const response = await axios.get(
-          'https://glamparlor.onrender.com/api/notifications/all',
-          {
-            headers: {
-              'Content-Type': 'application/json',
-              'x-auth-token': token,
-            },
-          },
-        );
-        setNotifications(response.data.notifications);
-      } catch (error) {
-        console.error('Error fetching notifications:', error);
-      } finally {
-        setLoading(false);
+  useFocusEffect(
+    React.useCallback(() => {
+      fetchNotifications();
+    }, [])
+  );
+  const fetchNotifications = async () => {
+    try {
+      const token = await AsyncStorage.getItem('userToken');
+      if (!token) {
+        Alert.alert('Error', 'No token found');
+        return;
       }
-    };
 
-    fetchNotifications();
-  }, []);
+      const response = await axios.get(
+        `${APIBASEURL}/api/notifications/all`,
+        {
+          headers: {
+            'Content-Type': 'application/json',
+            'x-auth-token': token,
+          },
+        },
+      );
+      setNotifications(response.data.notifications);
+    } catch (error) {
+      console.error('Error fetching notifications:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleDelete = async id => {
     try {
@@ -59,7 +61,7 @@ export default function Notifications() {
       }
 
       await axios.delete(
-        `https://glamparlor.onrender.com/api/notifications/${id}`,
+        `${APIBASEURL}/api/notifications/${id}`,
         {
           headers: {
             'Content-Type': 'application/json',
@@ -76,7 +78,7 @@ export default function Notifications() {
   };
 
   const renderItem = ({item}) => (
-    <View style={styles.notificationContainer}>
+    <View style={[styles.notificationContainer]}>
       <NotificationComp
         title={item.title}
         subTitle={item.description}
@@ -109,6 +111,7 @@ export default function Notifications() {
       ) : (
         <FlatList
           data={notifications}
+          showsVerticalScrollIndicator={false}
           renderItem={renderItem}
           keyExtractor={item => item._id.toString()}
         />
@@ -144,8 +147,17 @@ const styles = StyleSheet.create({
   notificationContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    paddingVertical: 10,
-    borderBottomWidth: 1,
-    borderBottomColor: Colors.lightGray,
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 3,
+    },
+    shadowOpacity: 0.29,
+    shadowRadius: 4.65,
+    elevation: 7,
+    backgroundColor:'white',
+    padding:10,
+    margin:5,
+    borderRadius:10
   },
 });

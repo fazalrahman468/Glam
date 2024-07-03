@@ -3,17 +3,13 @@ import React from 'react';
 import {Colors} from '../assets/colors/Colors';
 import {Fonts} from '../assets/fonts/Fonts';
 
-export default function NotificationComp({title, subTitle, seen, createdAt}) {
+export default function NotificationComp({title, subTitle, createdAt}) {
   return (
     <View style={styles.cont}>
       <Text style={styles.menText}>{title}</Text>
       <Text style={styles.subText}>{subTitle}</Text>
       <Text style={styles.dateText}>
         {new Date(createdAt).toLocaleString()}
-      </Text>
-      <Text
-        style={[styles.seenText, {color: seen ? Colors.green : Colors.red}]}>
-        {seen ? 'Seen' : 'Unseen'}
       </Text>
     </View>
   );
@@ -22,10 +18,6 @@ export default function NotificationComp({title, subTitle, seen, createdAt}) {
 const styles = StyleSheet.create({
   cont: {
     backgroundColor: Colors.white,
-    marginTop: 20,
-    borderBottomWidth: 1,
-    borderColor: Colors.gray,
-    paddingBottom: 20,
   },
   menText: {
     fontFamily: Fonts.semiBold,

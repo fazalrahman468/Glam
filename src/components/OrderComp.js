@@ -28,7 +28,7 @@ export default function OrderComp({
 const styles = StyleSheet.create({
   card: {
     flexDirection: 'row',
-    marginTop: 20,
+    margin:5,
     padding: 15,
     backgroundColor: Colors.white,
     borderRadius: 10,

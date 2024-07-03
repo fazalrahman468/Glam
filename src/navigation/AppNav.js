@@ -27,6 +27,7 @@ import Booking from '../screens/Booking';
 import Prices from '../screens/Prices';
 import Appointments from '../screens/Appointments';
 import BookingCheckOut from '../screens/BookingCheckOut';
+import Profile from '../screens/Profile';
 
 const Stack = createNativeStackNavigator();
 
@@ -57,6 +58,7 @@ export default function AppNav() {
       <Stack.Screen name="Prices" component={Prices} />
       <Stack.Screen name="Appointments" component={Appointments} />
       <Stack.Screen name="BookingCheckOut" component={BookingCheckOut} />
+      <Stack.Screen name="Profile" component={Profile} />
     </Stack.Navigator>
   );
 }

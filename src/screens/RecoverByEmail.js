@@ -15,8 +15,8 @@ import Back from '../assets/images/Back.svg';
 import ContactComp from '../components/ContactComp';
 import OTPInputView from '@twotalltotems/react-native-otp-input';
 import AppButton from '../components/AppButton';
+import { APIBASEURL } from '../utils/constants';
 
-const API_URL = 'https://glamparlor.onrender.com';
 
 export default function RecoverByEmail() {
   const navigation = useNavigation();
@@ -35,7 +35,7 @@ export default function RecoverByEmail() {
     setLoading(true);
     try {
       const response = await axios.post(
-        `${API_URL}/api/users/verify-otp/forget-password`,
+        `${APIBASEURL}/api/users/verify-otp/forget-password`,
         {code: otp, token},
       );
 
@@ -80,11 +80,7 @@ export default function RecoverByEmail() {
           onCodeFilled={setOtp}
         />
         <View style={styles.btnView}>
-          {loading ? (
-            <ActivityIndicator size="large" color={Colors.primary} />
-          ) : (
-            <AppButton title="NEXT" onPress={verifyOtp} />
-          )}
+            <AppButton loading={loading} title="NEXT" onPress={verifyOtp} />
         </View>
       </View>
     </KeyboardAvoidingView>

@@ -37,8 +37,8 @@ export default function BottomNav() {
         tabBarLabel: () => null, // Hide the label
       })}>
       <Tab.Screen name="CourseTutorial" component={CourseTutorial} />
-      <Tab.Screen name="CourseSearch" component={CourseSearch} />
-      <Tab.Screen name="CourseFav" component={CourseFav} />
+      {/* <Tab.Screen name="CourseSearch" component={CourseSearch} /> */}
+      {/* <Tab.Screen name="CourseFav" component={CourseFav} /> */}
     </Tab.Navigator>
   );
 }

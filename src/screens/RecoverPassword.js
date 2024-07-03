@@ -14,8 +14,9 @@ import Recover from '../assets/images/Recover.svg';
 import AppButton from '../components/AppButton';
 import ContactComp from '../components/ContactComp';
 import AppInput from '../components/AppInput';
+import { APIBASEURL } from '../utils/constants';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 
-const API_URL = 'https://glamparlor.onrender.com';
 
 export default function RecoverPassword() {
   const navigation = useNavigation();
@@ -31,7 +32,7 @@ export default function RecoverPassword() {
     setLoading(true);
     try {
       const response = await axios.post(
-        `${API_URL}/api/users/forget-password`,
+        `${APIBASEURL}/api/users/forget-password`,
         {email: email.trim().toLocaleLowerCase()},
       );
       const token = response.data.token;
@@ -52,6 +53,7 @@ export default function RecoverPassword() {
 
   return (
     <View style={styles.cont}>
+      <KeyboardAwareScrollView showsVerticalScrollIndicator={false} >
       <TouchableOpacity onPress={() => navigation.goBack()}>
         <Back />
       </TouchableOpacity>
@@ -70,13 +72,9 @@ export default function RecoverPassword() {
         value={email}
         onChangeText={setEmail}
       />
-
+      </KeyboardAwareScrollView>
       <View style={styles.btnView}>
-        {loading ? (
-          <ActivityIndicator size="large" color={Colors.primary} />
-        ) : (
-          <AppButton title="NEXT" onPress={sendRecoveryCode} />
-        )}
+          <AppButton loading={loading} title="NEXT" onPress={sendRecoveryCode} />
       </View>
     </View>
   );

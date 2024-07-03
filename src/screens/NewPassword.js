@@ -15,8 +15,8 @@ import ContactComp from '../components/ContactComp';
 import AppButton from '../components/AppButton';
 import {Fonts} from '../assets/fonts/Fonts';
 import PasswordInput from '../components/PasswordInput';
+import { APIBASEURL } from '../utils/constants';
 
-const API_URL = 'https://glamparlor.onrender.com';
 
 export default function NewPassword() {
   const navigation = useNavigation();
@@ -46,7 +46,7 @@ export default function NewPassword() {
     setLoading(true);
 
     try {
-      const response = await axios.put(`${API_URL}/api/users/update-password`, {
+      const response = await axios.put(`${APIBASEURL}/api/users/update-password`, {
         password: newPassword,
         token: token,
       });
@@ -98,11 +98,7 @@ export default function NewPassword() {
         Password must be at least 6 characters
       </Text>
       <View style={styles.btnView}>
-        {loading ? (
-          <ActivityIndicator size="large" color={Colors.primary} />
-        ) : (
-          <AppButton title="SAVE" onPress={handleSave} />
-        )}
+          <AppButton loading={loading} title="SAVE" onPress={handleSave} />
       </View>
     </View>
   );

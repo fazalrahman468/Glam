@@ -14,8 +14,7 @@ import OTPInputView from '@twotalltotems/react-native-otp-input';
 import AppButton from '../components/AppButton';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-
-const API_URL = 'https://glamparlor.onrender.com';
+import { APIBASEURL } from '../utils/constants';
 
 export default function VerifyEmail() {
   const navigation = useNavigation();
@@ -36,29 +35,30 @@ export default function VerifyEmail() {
     try {
       console.log('Sending OTP verification request:', {email, code: otp});
       const response = await axios.post(
-        `${API_URL}/api/users/verify-otp/registration`,
+        `${APIBASEURL}/api/users/verify-otp/registration`,
         {
-          email,
+          email:email.trim().toLocaleLowerCase(),
           code: otp,
         },
       );
 
-      console.log('OTP verification response:', response.data);
-
       if (response.data.success) {
-        console.log('OTP verified successfully. Registering user...');
         const registerResponse = await axios.post(
-          `${API_URL}/api/users/signup`,
+          `${APIBASEURL}/api/users/signup`,
           {
             name: fullName,
-            email,
+            email:email.trim().toLocaleLowerCase(),
             phone: mobileNumber,
             password,
           },
         );
-        console.log('User registration response:', registerResponse.data);
 
         await AsyncStorage.setItem('userToken', registerResponse.data.token);
+        await AsyncStorage.setItem('name', fullName);
+        await AsyncStorage.setItem('image', "");
+        await AsyncStorage.setItem('email', email);
+        await AsyncStorage.setItem('phone', mobileNumber);
+  
 
         navigation.navigate('Home');
       } else {
@@ -98,11 +98,7 @@ export default function VerifyEmail() {
         onCodeChanged={setOtp}
       />
       <View style={styles.btnView}>
-        {loading ? (
-          <ActivityIndicator size="large" color={Colors.primary} />
-        ) : (
-          <AppButton title="Verify" onPress={verifyOtp} />
-        )}
+          <AppButton loading={loading} title="Verify" onPress={verifyOtp} />
       </View>
     </View>
   );

@@ -18,7 +18,7 @@ export default function AppointmentComp({service, date, time, status}) {
 
 const styles = StyleSheet.create({
   card: {
-    marginTop: 20,
+    margin: 5,
     padding: 15,
     backgroundColor: Colors.white,
     borderRadius: 10,

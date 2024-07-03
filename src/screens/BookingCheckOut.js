@@ -15,6 +15,7 @@ import CartButton from '../components/CartButton';
 import {useNavigation, useRoute} from '@react-navigation/native';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { APIBASEURL } from '../utils/constants';
 
 export default function BookingCheckOut() {
   const navigation = useNavigation();
@@ -60,15 +61,15 @@ export default function BookingCheckOut() {
 
   const handleConfirmBooking = async () => {
     setLoading(true);
-    console.log('payload', services, date, time);
     try {
       const payload = {
-        serviceId: services[0].id,
+        serviceId: selectedService.serviceId,
         date,
         time,
       };
+      console.log(payload)
       const response = await axios.post(
-        'https://glamparlor.onrender.com/api/appointment/create',
+        `${APIBASEURL}/api/appointment/create`,
         payload,
         {
           headers: {

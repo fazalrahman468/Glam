@@ -35,6 +35,7 @@ const styles = StyleSheet.create({
   cont: {
     backgroundColor: Colors.white,
     flex: 1,
+    paddingTop:20
   },
   cont1: {
     padding: 20,

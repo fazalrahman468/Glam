@@ -18,8 +18,8 @@ import AppInput from '../components/AppInput';
 import AppButton from '../components/AppButton';
 import {useNavigation} from '@react-navigation/native';
 import PasswordInput from '../components/PasswordInput';
+import { APIBASEURL } from '../utils/constants';
 
-const API_URL = 'https://glamparlor.onrender.com';
 
 export default function SignUp() {
   const navigation = useNavigation();
@@ -60,7 +60,7 @@ export default function SignUp() {
     setLoading(true);
 
     try {
-      await axios.post(`${API_URL}/api/users/send-code`, {
+      await axios.post(`${APIBASEURL}/api/users/send-code`, {
         name: fullName,
         email,
         phone: mobileNumber,
@@ -122,11 +122,7 @@ export default function SignUp() {
             Password must be at least 6 characters
           </Text>
           <View style={styles.btnView}>
-            {loading ? (
-              <ActivityIndicator size="large" color={Colors.primary} />
-            ) : (
-              <AppButton title="Sign Up" onPress={signUpUser} />
-            )}
+              <AppButton loading={loading} title="Sign Up" onPress={signUpUser} />
           </View>
           <View style={styles.signin}>
             <Text style={styles.signinText}>Already have an account?</Text>

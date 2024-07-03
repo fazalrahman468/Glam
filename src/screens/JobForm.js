@@ -9,6 +9,7 @@ import AppButton from '../components/AppButton';
 import JobComp from '../components/JobComp';
 import {useNavigation} from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { APIBASEURL } from '../utils/constants';
 
 export default function JobForm() {
   const [firstName, setFirstName] = useState('');
@@ -56,7 +57,7 @@ export default function JobForm() {
 
     try {
       const response = await axios.post(
-        'https://glamparlor.onrender.com/api/jobform/create',
+        `${APIBASEURL}/api/jobform/create`,
         {
           fname: firstName,
           lname: lastName,
@@ -134,11 +135,7 @@ export default function JobForm() {
         ))}
       </View>
       <View style={styles.btnView}>
-        {loading ? (
-          <ActivityIndicator size="large" color={Colors.primary} />
-        ) : (
-          <AppButton title="SUBMIT" onPress={handleSubmit} />
-        )}
+          <AppButton loading={loading} title="SUBMIT" onPress={handleSubmit} />
       </View>
     </View>
   );

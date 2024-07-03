@@ -59,10 +59,6 @@ export default function OnBoard() {
               title="FEEDBACK:"
               subTitle="SHARE YOUR THOUGHTS FOR IMPROVEMENT"
             />
-            <Text style={styles.salText}>
-              Customers Agree To Terms{' '}
-              <Text style={styles.salPolicyText}>Salon Policy</Text>
-            </Text>
           </ImageBackground>
         </View>
         <View style={styles.cont1}>
@@ -94,7 +90,13 @@ export default function OnBoard() {
       </Swiper>
       {currentIndex === 0 && (
         <View style={styles.btnContainer}>
-          <AppButton title="Next" onPress={handleNextPress} />
+          <Text style={styles.salText}>
+                Customers Agree To Terms{' '}
+            <Text style={styles.salPolicyText}>Salon Policy</Text>
+          </Text>
+          <View style={{width:"25%"}}>
+            <AppButton title="Next" onPress={handleNextPress}/>
+          </View>
         </View>
       )}
     </View>
@@ -129,8 +131,8 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     alignItems: 'center',
-    width: '25%',
-    marginHorizontal: 160,
+    justifyContent:'center',
+    width: '100%',
   },
   cont1: {
     backgroundColor: Colors.primary,
