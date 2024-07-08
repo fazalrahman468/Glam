@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useContext} from 'react';
 import {
   View,
   Text,
@@ -6,7 +6,6 @@ import {
   Alert,
   ScrollView,
   KeyboardAvoidingView,
-  Platform,
   ActivityIndicator,
   TouchableOpacity,
 } from 'react-native';
@@ -18,11 +17,13 @@ import AppInput from '../components/AppInput';
 import AppButton from '../components/AppButton';
 import {useNavigation} from '@react-navigation/native';
 import PasswordInput from '../components/PasswordInput';
+import {CartContext} from '../components/CartContext';
 
 const API_URL = 'https://glamparlor.onrender.com';
 
 export default function SignUp() {
   const navigation = useNavigation();
+  const {setUser} = useContext(CartContext);
 
   const [fullName, setFullName] = useState('');
   const [email, setEmail] = useState('');
@@ -62,13 +63,23 @@ export default function SignUp() {
     try {
       await axios.post(`${API_URL}/api/users/send-code`, {
         name: fullName,
-        email,
+        email: email.trim().toLocaleLowerCase(),
         phone: mobileNumber,
         password,
       });
+      setUser({
+        fullName,
+        email: email.trim().toLocaleLowerCase(),
+        mobileNumber,
+      });
+      console.log('User data set:', {
+        fullName,
+        email: email.trim().toLocaleLowerCase(),
+        mobileNumber,
+      });
       navigation.navigate('VerifyEmail', {
         fullName,
-        email,
+        email: email.trim().toLocaleLowerCase(),
         mobileNumber,
         password,
       });

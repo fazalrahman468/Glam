@@ -3,13 +3,17 @@ import React from 'react';
 import {NavigationContainer} from '@react-navigation/native';
 import AppNav from './src/navigation/AppNav';
 import {CartProvider} from './src/components/CartContext';
+import {Provider} from 'react-redux';
+import store from './src/store/Store';
 
 export default function App() {
   return (
-    <CartProvider>
-      <NavigationContainer>
-        <AppNav />
-      </NavigationContainer>
-    </CartProvider>
+    <Provider store={store}>
+      <CartProvider>
+        <NavigationContainer>
+          <AppNav />
+        </NavigationContainer>
+      </CartProvider>
+    </Provider>
   );
 }

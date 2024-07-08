@@ -20,6 +20,8 @@ import AppButton from '../components/AppButton';
 import LoginComp from '../components/LoginComp';
 import PasswordInput from '../components/PasswordInput';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import {useDispatch, useSelector} from 'react-redux';
+import {loginUser} from '../store/UserSlice';
 
 const API_URL = 'https://glamparlor.onrender.com';
 
@@ -39,6 +41,23 @@ export default function Login() {
     setRememberMe(!rememberMe);
   };
 
+  // const {loading, error} = useSelector(state => state.user);
+  // const dispatch = useDispatch();
+  // const handleLogin = e => {
+  //   e.preventDefault();
+  //   let userCred = {
+  //     email,
+  //     password,
+  //   };
+  //   dispatch(loginUser(userCred)).then(result => {
+  //     if (result.payload) {
+  //       setEmail('');
+  //       setPassword('');
+  //       navigation.navigate('Home');
+  //     }
+  //   });
+  // };
+
   const loginUser = async () => {
     if (!email || !password) {
       Alert.alert('Error', 'Both email and password must be filled');
@@ -56,7 +75,7 @@ export default function Login() {
       const response = await axios.post(`${API_URL}/api/auth`, {
         email: email.trim().toLocaleLowerCase(),
         password,
-        fcm_token: '',
+        // fcm_token: '',
       });
 
       const {token} = response.data;
@@ -121,6 +140,8 @@ export default function Login() {
             <AppButton title="LOG IN" onPress={loginUser} />
           )}
         </View>
+
+        {/* {error && Alert.alert('Access Denied', error)} */}
         <Text style={styles.accText}>
           Don't have an account yet?{' '}
           <Text

@@ -91,6 +91,7 @@ export default function VerifyEmail() {
       <OTPInputView
         style={styles.otp}
         pinCount={6}
+        autoFocusOnLoad={false}
         codeInputFieldStyle={styles.underlineStyleBase}
         codeInputHighlightStyle={styles.underlineStyleHighLighted}
         keyboardAppearance="default"

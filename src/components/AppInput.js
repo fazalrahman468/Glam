@@ -27,7 +27,7 @@ export default function AppInput({text, icon, image, ...otherProps}) {
       onPress={handlePress}>
       <Text style={styles.text}>{text}</Text>
       <View style={styles.cont}>
-        {image && <Image source={image} />}
+        {image && <Image source={image} style={{marginHorizontal: 10}} />}
 
         <TextInput
           {...otherProps}
@@ -48,14 +48,13 @@ const styles = StyleSheet.create({
     color: Colors.blueDark,
     fontFamily: Fonts.medium,
     fontSize: 14,
-    margin: 5,
+    margin: 8,
   },
   cont: {
     backgroundColor: Colors.white,
     borderColor: Colors.grayBorder,
     borderWidth: 1,
-    borderRadius: 6,
-    padding: 5,
+    borderRadius: 8,
     height: 48,
     width: '100%',
     flexDirection: 'row',
